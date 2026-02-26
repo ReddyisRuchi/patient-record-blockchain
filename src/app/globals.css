@@ -1,42 +1,97 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root{
+  --mc-primary: #0ea5e9;        /* blue-500 */
+  --mc-primary-600: #0284c7;    /* blue-600 */
+  --mc-accent: #10b981;         /* emerald-500 */
+  --mc-bg: #f8fafc;             /* slate-50 */
+  --mc-surface: #ffffff;
+  --mc-muted: #64748b;          /* slate-500 */
+  --mc-danger: #ef4444;         /* red-500 */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html, body {
+  height: 100%;
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+body{
+  background: var(--mc-bg);
+  color: #0f172a;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+/* ================= Gradient ================= */
+.medical-gradient{
+  background-image: linear-gradient(90deg, #2563eb 0%, #10b981 100%);
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+/* ================= Buttons ================= */
+.btn-primary{
+  @apply inline-flex items-center justify-center
+  px-5 py-2.5 rounded-lg font-medium text-white
+  bg-blue-600 hover:bg-blue-700
+  shadow-sm hover:shadow-md
+  transition-all duration-200;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+.btn-secondary{
+  @apply inline-flex items-center justify-center
+  px-5 py-2.5 rounded-lg font-medium text-white
+  bg-emerald-500 hover:bg-emerald-600
+  shadow-sm hover:shadow-md
+  transition-all duration-200;
+}
+
+.btn-outline{
+  @apply inline-flex items-center justify-center
+  px-5 py-2.5 rounded-lg font-medium
+  border border-blue-600 text-blue-600
+  hover:bg-blue-50
+  transition-all duration-200;
+}
+
+/* ================= Card ================= */
+.card{
+  @apply bg-white rounded-xl shadow-sm
+  hover:shadow-lg hover:-translate-y-1
+  p-6 border border-slate-100
+  transition-all duration-200;
+}
+/* ================= Layout ================= */
+.container-max{
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+/* ================= Forms ================= */
+.form-control input,
+.form-control select,
+.form-control textarea{
+  @apply w-full px-4 py-2.5
+  border border-slate-200
+  rounded-lg bg-white
+  focus:ring-2 focus:ring-blue-200 focus:border-blue-500
+  focus:outline-none
+  transition-all duration-150;
+}
+
+/* ================= Navbar ================= */
+.navbar{
+  @apply bg-white shadow-sm border-b border-slate-100;
+}
+
+.nav-title{
+  @apply text-xl font-semibold text-blue-600 tracking-tight;
+}
+
+/* ================= Page spacing ================= */
+.page{
+  padding: 2rem;
 }
