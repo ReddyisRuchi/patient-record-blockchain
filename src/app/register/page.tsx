@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Navbar from '@/components/Navbar';
-import api from '@/lib/api';
+import Navbar from "@/components/Navbar";
+import api from "@/lib/api";
 
 export default function RegisterPage() {
   const [error, setError] = useState("");
@@ -19,7 +19,7 @@ export default function RegisterPage() {
     const email = e.target.email.value;
     const password = e.target.password.value;
     const confirm = e.target.confirm.value;
-    const role = e.target.role.value;   // ✅ NEW
+    const role = e.target.role.value;
 
     if (password !== confirm) {
       setError("Passwords do not match");
@@ -28,81 +28,116 @@ export default function RegisterPage() {
     }
 
     try {
-      await api.post('/api/auth/register', { 
-        name, 
-        email, 
-        password, 
-        role   // ✅ SEND ROLE
+      await api.post("/api/auth/register", {
+        name,
+        email,
+        password,
+        role,
       });
 
-      router.push('/login');
+      router.push("/login");
     } catch (err: any) {
-      setError(err.message || (err.payload && err.payload.message) || 'Registration failed');
+      setError(
+        err.message ||
+        (err.payload && err.payload.message) ||
+        "Registration failed"
+      );
     } finally {
       setLoading(false);
     }
   }
 
+  const inputStyle =
+    "w-full px-4 py-2.5 border border-slate-200 rounded-lg bg-white focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none transition";
+
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
+    <div className="min-h-screen bg-slate-50">
       <Navbar />
-      <div className="container mx-auto px-6 py-16">
-        <div className="max-w-md mx-auto bg-white/5 p-6 rounded-lg">
-          <h2 className="text-2xl font-semibold mb-4">Create an account</h2>
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+      <div className="flex items-center justify-center py-16 px-4">
+        <div className="w-full max-w-md card">
 
-            <input 
-              name="name" 
-              placeholder="Full name" 
-              required 
-              className="p-3 rounded bg-white/10" 
-            />
+          <h2 className="text-3xl font-bold text-blue-600 text-center mb-6">
+            Create Account
+          </h2>
 
-            <input 
-              name="email" 
-              type="email" 
-              placeholder="Email" 
-              required 
-              className="p-3 rounded bg-white/10" 
-            />
+          <form onSubmit={handleSubmit} className="space-y-5">
 
-            <input 
-              name="password" 
-              type="password" 
-              placeholder="Password" 
-              required 
-              className="p-3 rounded bg-white/10" 
-            />
+            <div>
+              <label className="block mb-1 text-sm text-slate-600">
+                Full Name
+              </label>
+              <input
+                name="name"
+                required
+                className={inputStyle}
+              />
+            </div>
 
-            <input 
-              name="confirm" 
-              type="password" 
-              placeholder="Confirm password" 
-              required 
-              className="p-3 rounded bg-white/10" 
-            />
+            <div>
+              <label className="block mb-1 text-sm text-slate-600">
+                Email
+              </label>
+              <input
+                name="email"
+                type="email"
+                required
+                className={inputStyle}
+              />
+            </div>
 
-            {/* ✅ ROLE DROPDOWN */}
-            <select 
-              name="role" 
-              required 
-              className="p-3 rounded bg-white/10 text-white"
+            <div>
+              <label className="block mb-1 text-sm text-slate-600">
+                Password
+              </label>
+              <input
+                name="password"
+                type="password"
+                required
+                className={inputStyle}
+              />
+            </div>
+
+            <div>
+              <label className="block mb-1 text-sm text-slate-600">
+                Confirm Password
+              </label>
+              <input
+                name="confirm"
+                type="password"
+                required
+                className={inputStyle}
+              />
+            </div>
+
+            <div>
+              <label className="block mb-1 text-sm text-slate-600">
+                Role
+              </label>
+              <select
+                name="role"
+                required
+                className={inputStyle}
+              >
+                <option value="PATIENT">Patient</option>
+                <option value="DOCTOR">Doctor</option>
+              </select>
+            </div>
+
+            {error && (
+              <p className="text-sm text-red-500 text-center">
+                {error}
+              </p>
+            )}
+
+            <button
+              disabled={loading}
+              className="btn-primary w-full"
             >
-              <option value="PATIENT">PATIENT</option>
-              <option value="DOCTOR">DOCTOR</option>
-            </select>
-
-            <button 
-              disabled={loading} 
-              className="mt-2 bg-gradient-to-r from-emerald-400 to-sky-500 rounded py-2"
-            >
-              {loading ? 'Registering…' : 'Register'}
+              {loading ? "Registering..." : "Register"}
             </button>
 
           </form>
-
-          {error && <p className="text-red-400 mt-2">{error}</p>}
         </div>
       </div>
     </div>
