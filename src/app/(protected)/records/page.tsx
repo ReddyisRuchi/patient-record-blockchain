@@ -154,6 +154,7 @@ export default function RecordsPage() {
                   <th className="py-3 px-4">Diagnosis</th>
                   <th className="py-3 px-4">Treatment</th>
                   <th className="py-3 px-4">Created At</th>
+                  <th className="py-3 px-4">Blockchain</th>
                 </tr>
               </thead>
               <tbody>
@@ -168,6 +169,18 @@ export default function RecordsPage() {
                     <td className="py-3 px-4">{record.treatment}</td>
                     <td className="py-3 px-4 text-slate-600">
                       {new Date(record.createdAt).toLocaleString()}
+                    </td>
+                    <td className="py-3 px-4 text-xs break-all text-slate-500">
+                      {record.blockchainHash ? (
+                        <div className="flex flex-col gap-1">
+                          <span className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full w-fit">
+                            On-Chain
+                          </span>
+                          {record.blockchainHash}
+                        </div>
+                      ) : (
+                        <span className="text-slate-400">Not Stored</span>
+                      )}
                     </td>
                   </tr>
                 ))}

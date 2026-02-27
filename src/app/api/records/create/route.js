@@ -28,7 +28,6 @@ export async function POST(request) {
 
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    // 🔒 Only doctors can create records
     if (decoded.role !== "DOCTOR") {
       return NextResponse.json(
         { message: "Access denied" },
@@ -46,7 +45,7 @@ export async function POST(request) {
       );
     }
 
-    // ✅ Create record in DB first
+    // 1️⃣ Create record in DB
     const created = await prisma.patientRecord.create({
       data: {
         patientId: Number(patientId),
@@ -55,7 +54,7 @@ export async function POST(request) {
       },
     });
 
-    // 🔐 Serialize record for hashing
+    // 2️⃣ Serialize for hashing
     const serialized = JSON.stringify({
       id: created.id,
       patientId: created.patientId,
@@ -64,26 +63,31 @@ export async function POST(request) {
       createdAt: created.createdAt,
     });
 
-    // 🔐 Generate SHA-256 hash
+    // 3️⃣ Generate SHA-256
     const hash = crypto
       .createHash("sha256")
       .update(serialized)
       .digest("hex");
 
-    // ⛓ Store hash on blockchain
+    // 4️⃣ Store hash on blockchain
     const contract = getContract();
-
     const tx = await contract.storeRecord(created.id, hash);
     await tx.wait();
+
+    // 5️⃣ Save blockchain hash in DB
+    await prisma.patientRecord.update({
+      where: { id: created.id },
+      data: { blockchainHash: hash },
+    });
 
     return NextResponse.json(
       {
         message: "Record created successfully!",
-        record: created,
-        blockchainHash: hash,
+        record: { ...created, blockchainHash: hash },
       },
       { status: 201 }
     );
+
   } catch (error) {
     console.error("Create Record Error:", error);
 

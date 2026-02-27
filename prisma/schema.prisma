@@ -24,6 +24,7 @@ model PatientRecord {
   diagnosis String
   treatment String
   createdAt DateTime @default(now())
-
+  blockchainHash String?   
+  
   user User @relation(fields: [patientId], references: [id])
 }
