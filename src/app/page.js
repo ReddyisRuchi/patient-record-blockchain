@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import FeatureCard from "@/components/FeatureCard";
-import Footer from "@/components/Footer";
+
 
 export default function Home() {
   return (
@@ -34,7 +34,7 @@ export default function Home() {
         </div>
       </section>
 
-      <Footer />
+  
     </>
   );
 }
