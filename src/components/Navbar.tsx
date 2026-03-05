@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/lib/api";
 import useAuth from "@/hooks/useAuth";
@@ -23,61 +22,64 @@ export default function Navbar() {
 
   const isLoggedIn = Boolean(user);
 
+  // ✅ Dynamic route based on role
+  const submitRoute =
+    user?.role === "PATIENT" ? "/patient_submit" : "/doctor_submit";
+
   return (
-  <nav className="navbar">
-    <div className="container-max flex justify-between items-center py-4">
-      
-      <div className="flex items-center gap-4">
-       
+    <nav className="navbar">
+      <div className="container-max flex justify-between items-center py-4">
 
-        <div className="hidden md:flex gap-4 items-center">
+        <div className="flex items-center gap-4">
 
-          {/* Show Home ONLY when NOT logged in */}
-          {!isLoggedIn && (
-            <Link href="/" className="text-slate-700 hover:text-blue-600">
-              Home
-            </Link>
-          )}
+          <div className="hidden md:flex gap-4 items-center">
 
-          {/* Show protected links only when logged in */}
-          {isLoggedIn && (
-            <>
-              <Link href="/dashboard" className="text-slate-700 hover:text-blue-600">
-                Dashboard
+            {/* Home only when NOT logged in */}
+            {!isLoggedIn && (
+              <Link href="/" className="text-slate-700 hover:text-blue-600">
+                Home
               </Link>
+            )}
 
-              <Link href="/records" className="text-slate-700 hover:text-blue-600">
-                Records
-              </Link>
+            {/* Protected links */}
+            {isLoggedIn && (
+              <>
+                <Link href="/dashboard" className="text-slate-700 hover:text-blue-600">
+                  Dashboard
+                </Link>
 
-              {/* Only doctors can see Submit */}
-              {user?.role === "DOCTOR" && (
-                <Link href="/doctor_submit" className="text-slate-700 hover:text-blue-600">
+                <Link href="/records" className="text-slate-700 hover:text-blue-600">
+                  Records
+                </Link>
+
+                <Link href={submitRoute} className="text-slate-700 hover:text-blue-600">
                   Create Record
                 </Link>
-              )}
+              </>
+            )}
+
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4">
+          {!isLoggedIn ? (
+            <>
+              <Link href="/login" className="text-slate-700 hover:text-blue-600">
+                Login
+              </Link>
+
+              <Link href="/register" className="btn-primary">
+                Register
+              </Link>
             </>
+          ) : (
+            <button onClick={handleLogout} className="btn-secondary">
+              Logout
+            </button>
           )}
         </div>
-      </div>
 
-      <div className="flex items-center gap-4">
-        {!isLoggedIn ? (
-          <>
-            <Link href="/login" className="text-slate-700 hover:text-blue-600">
-              Login
-            </Link>
-            <Link href="/register" className="btn-primary">
-              Register
-            </Link>
-          </>
-        ) : (
-          <button onClick={handleLogout} className="btn-secondary">
-            Logout
-          </button>
-        )}
       </div>
-    </div>
-  </nav>
-);
+    </nav>
+  );
 }

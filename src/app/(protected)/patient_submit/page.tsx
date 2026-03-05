@@ -1,45 +1,25 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import useAuth from "@/hooks/useAuth";
 
-export default function SubmitPage() {
+export default function PatientUpload() {
   const { user } = useAuth();
-
-  const [patients, setPatients] = useState([]);
-  const [patientId, setPatientId] = useState("");
-  const [createdRecord, setCreatedRecord] = useState(null);
+  const [message, setMessage] = useState("");
 
   const isLoggedIn = Boolean(user);
+  const isPatient = user?.role === "PATIENT";
 
-  // Fetch patients
-  useEffect(() => {
-    if (!user) return;
+  const inputStyle =
+    "w-full px-4 py-2.5 border border-slate-200 rounded-lg bg-white focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none transition";
 
-    fetch("/api/users/patients", {
-      credentials: "same-origin",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.patients) {
-          setPatients(data.patients);
-        }
-      })
-      .catch((err) => console.error(err));
-  }, [user]);
-
-  async function handleSubmit(e) {
+  async function handleSubmit(e: any) {
     e.preventDefault();
 
-    if (!isLoggedIn) return;
-
-    if (!patientId) {
-      alert("Please select a patient.");
-      return;
-    }
+    if (!user) return;
 
     const formData = {
-      patientId,
+      patientId: user.id, // AUTO FILLED
       department: e.target.department.value,
       visitType: e.target.visitType.value,
       symptoms: e.target.symptoms.value,
@@ -53,7 +33,9 @@ export default function SubmitPage() {
     try {
       const res = await fetch("/api/records/create", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         credentials: "same-origin",
         body: JSON.stringify(formData),
       });
@@ -61,59 +43,42 @@ export default function SubmitPage() {
       const data = await res.json();
 
       if (res.ok) {
-        setCreatedRecord(data.record);
-        setPatientId("");
+        setMessage("Record created successfully!");
         e.target.reset();
       } else {
-        alert(data.error || "Failed to create record");
+        setMessage(data.message || "Failed to create record");
       }
     } catch (err) {
       console.error(err);
+      setMessage("Server error");
     }
-  }
-
-  const inputStyle =
-    "w-full px-4 py-2.5 border border-slate-200 rounded-lg bg-white focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none transition";
-
-  if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        Loading...
-      </div>
-    );
   }
 
   return (
     <div className="min-h-screen bg-slate-50 py-16 px-4">
-      <div className="mx-auto w-full max-w-2xl">
+      <div className="mx-auto max-w-2xl">
 
         <h1 className="text-3xl font-bold text-blue-600 mb-8 text-center">
-          Create Medical Record
+          Submit Medical Record
         </h1>
 
-        <div className="card">
+        {!isLoggedIn && (
+          <p className="text-center text-red-500">
+            Please login first.
+          </p>
+        )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+        {isLoggedIn && !isPatient && (
+          <p className="text-center text-red-500">
+            Only patients can submit records here.
+          </p>
+        )}
 
-            {/* Patient */}
-            <div>
-              <label className="block mb-1 text-sm text-slate-600">
-                Select Patient
-              </label>
-              <select
-                value={patientId}
-                onChange={(e) => setPatientId(e.target.value)}
-                className={inputStyle}
-                required
-              >
-                <option value="">-- Select Patient --</option>
-                {patients.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name || p.email} (ID: {p.id})
-                  </option>
-                ))}
-              </select>
-            </div>
+        {isPatient && (
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-6 bg-white p-6 rounded shadow"
+          >
 
             {/* Department */}
             <div>
@@ -156,10 +121,9 @@ export default function SubmitPage() {
               </label>
               <textarea
                 name="symptoms"
-                required
-                rows="3"
+                rows={3}
                 className={inputStyle}
-                placeholder="e.g., fever, headache, cough..."
+                required
               />
             </div>
 
@@ -170,23 +134,23 @@ export default function SubmitPage() {
               </label>
               <textarea
                 name="diagnosis"
-                required
-                rows="3"
+                rows={3}
                 className={inputStyle}
+                required
               />
             </div>
 
             {/* Prescription */}
             <div>
               <label className="block mb-1 text-sm text-slate-600">
-                Prescription / Medication
+                Prescription
               </label>
               <textarea
                 name="prescription"
-                required
-                rows="3"
+                rows={3}
                 className={inputStyle}
-                placeholder="Medication and dosage instructions"
+                required
+                placeholder="Medicine name and dosage"
               />
             </div>
 
@@ -196,7 +160,7 @@ export default function SubmitPage() {
                 Severity
               </label>
               <select name="severity" className={inputStyle} required>
-                <option value="">Select Severity</option>
+                <option value="">Select severity</option>
                 <option>Mild</option>
                 <option>Moderate</option>
                 <option>Severe</option>
@@ -221,38 +185,29 @@ export default function SubmitPage() {
             {/* Notes */}
             <div>
               <label className="block mb-1 text-sm text-slate-600">
-                Doctor Notes (Optional)
+                Notes
               </label>
               <textarea
                 name="notes"
-                rows="3"
+                rows={3}
                 className={inputStyle}
-                placeholder="Additional clinical notes..."
               />
             </div>
 
-            <button type="submit" className="btn-primary w-full">
-              Save Record
+            <button
+              type="submit"
+              className="bg-blue-600 text-white px-4 py-2 rounded w-full"
+            >
+              Create Record
             </button>
 
           </form>
-        </div>
+        )}
 
-        {/* Success Display */}
-        {createdRecord && (
-          <div className="card mt-6">
-            <h2 className="text-lg font-semibold mb-4 text-green-600">
-              Record Created Successfully
-            </h2>
-
-            <p><strong>Patient ID:</strong> {createdRecord.patientId}</p>
-            <p><strong>Diagnosis:</strong> {createdRecord.diagnosis}</p>
-            <p><strong>Prescription:</strong> {createdRecord.prescription}</p>
-
-            <p className="text-sm text-slate-500 mt-2">
-              {new Date(createdRecord.createdAt).toLocaleString()}
-            </p>
-          </div>
+        {message && (
+          <p className="text-center mt-6 text-green-600">
+            {message}
+          </p>
         )}
 
       </div>

@@ -28,13 +28,12 @@ export async function POST(request) {
 
     const decoded = jwt.verify(token, JWT_SECRET);
 
-    if (decoded.role !== "DOCTOR") {
-      return NextResponse.json(
-        { message: "Access denied" },
-        { status: 403 }
-      );
-    }
-
+if (!["DOCTOR", "PATIENT"].includes(decoded.role)) {
+  return NextResponse.json(
+    { message: "Access denied" },
+    { status: 403 }
+  );
+}
     const body = await request.json();
 
     const {
