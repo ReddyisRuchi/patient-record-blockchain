@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import { getContract } from "@/lib/blockchain";
 
@@ -55,66 +54,52 @@ if (!["DOCTOR", "PATIENT"].includes(decoded.role)) {
       );
     }
 
-    // 1️⃣ Create record in DB
+    // 1️⃣ Create record in database
     const created = await prisma.patientRecord.create({
       data: {
-        patientId: Number(patientId),
-        department,
-        visitType,
-        symptoms,
+        patientId,
         diagnosis,
-        prescription,
-        severity,
-        followUp,
-        notes,
-      },
+        treatment
+      }
     });
 
-    // 2️⃣ Serialize record for hashing
+    // 2️⃣ Serialize record
     const serialized = JSON.stringify({
       id: created.id,
       patientId: created.patientId,
-      department: created.department,
-      visitType: created.visitType,
-      symptoms: created.symptoms,
       diagnosis: created.diagnosis,
-      prescription: created.prescription,
-      severity: created.severity,
-      followUp: created.followUp,
-      notes: created.notes,
+      treatment: created.treatment,
       createdAt: created.createdAt,
     });
 
-    // 3️⃣ Generate SHA256
+    // 3️⃣ Generate SHA256 hash
     const hash = crypto
       .createHash("sha256")
       .update(serialized)
       .digest("hex");
 
     // 4️⃣ Store hash on blockchain
-    const contract = await getContract();
+    const contract = getContract();
     const tx = await contract.storeRecord(created.id, hash);
     await tx.wait();
 
-    // 5️⃣ Save blockchain hash in DB
-    const updated = await prisma.patientRecord.update({
+    // 5️⃣ Save blockchain hash in database
+    await prisma.patientRecord.update({
       where: { id: created.id },
-      data: { blockchainHash: hash },
+      data: { blockchainHash: hash }
     });
 
-    return NextResponse.json(
-      {
-        message: "Record created successfully!",
-        record: updated,
-      },
-      { status: 201 }
-    );
+    return NextResponse.json({
+      message: "Record created successfully",
+      record: created,
+      blockchainHash: hash,
+      blockchainTransaction: tx.hash
+    });
 
   } catch (error) {
-    console.error("Create Record Error:", error);
-
+    console.error(error);
     return NextResponse.json(
-      { message: "Internal server error" },
+      { error: "Failed to create record" },
       { status: 500 }
     );
   }
