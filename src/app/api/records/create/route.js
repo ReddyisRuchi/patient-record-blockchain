@@ -1,60 +1,30 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import { getContract } from "@/lib/blockchain";
 
-const JWT_SECRET = process.env.JWT_SECRET || "dev-secret";
-
-function getUserFromReq(request) {
-  const auth = request.headers.get("authorization") || "";
-  if (auth.startsWith("Bearer ")) {
-    return auth.replace("Bearer ", "");
-  }
-
-  const cookieHeader = request.headers.get("cookie") || "";
-  const match = cookieHeader.match(/(?:^|; )token=([^;]+)/);
-  if (match) return match[1];
-
-  return null;
-}
-
-export async function POST(request) {
+export async function POST(req) {
   try {
-    const token = getUserFromReq(request);
-    if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
-
-    const decoded = jwt.verify(token, JWT_SECRET);
-
-    if (decoded.role !== "DOCTOR") {
-      return NextResponse.json(
-        { message: "Access denied" },
-        { status: 403 }
-      );
-    }
-
-    const body = await request.json();
+    const body = await req.json();
     const { patientId, diagnosis, treatment } = body;
 
     if (!patientId || !diagnosis || !treatment) {
       return NextResponse.json(
-        { message: "Missing required fields" },
+        { error: "Missing required fields" },
         { status: 400 }
       );
     }
 
-    // 1️⃣ Create record in DB
+    // 1️⃣ Create record in database
     const created = await prisma.patientRecord.create({
       data: {
-        patientId: Number(patientId),
+        patientId,
         diagnosis,
-        treatment,
-      },
+        treatment
+      }
     });
 
-    // 2️⃣ Serialize for hashing
+    // 2️⃣ Serialize record
     const serialized = JSON.stringify({
       id: created.id,
       patientId: created.patientId,
@@ -63,7 +33,7 @@ export async function POST(request) {
       createdAt: created.createdAt,
     });
 
-    // 3️⃣ Generate SHA-256
+    // 3️⃣ Generate SHA256 hash
     const hash = crypto
       .createHash("sha256")
       .update(serialized)
@@ -74,25 +44,23 @@ export async function POST(request) {
     const tx = await contract.storeRecord(created.id, hash);
     await tx.wait();
 
-    // 5️⃣ Save blockchain hash in DB
+    // 5️⃣ Save blockchain hash in database
     await prisma.patientRecord.update({
       where: { id: created.id },
-      data: { blockchainHash: hash },
+      data: { blockchainHash: hash }
     });
 
-    return NextResponse.json(
-      {
-        message: "Record created successfully!",
-        record: { ...created, blockchainHash: hash },
-      },
-      { status: 201 }
-    );
+    return NextResponse.json({
+      message: "Record created successfully",
+      record: created,
+      blockchainHash: hash,
+      blockchainTransaction: tx.hash
+    });
 
   } catch (error) {
-    console.error("Create Record Error:", error);
-
+    console.error(error);
     return NextResponse.json(
-      { message: "Internal server error" },
+      { error: "Failed to create record" },
       { status: 500 }
     );
   }
