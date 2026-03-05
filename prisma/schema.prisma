@@ -19,12 +19,19 @@ model User {
 }
 
 model PatientRecord {
-  id        Int      @id @default(autoincrement())
-  patientId Int
-  diagnosis String
-  treatment String
-  createdAt DateTime @default(now())
-  blockchainHash String?   
-  
-  user User @relation(fields: [patientId], references: [id])
+  id             Int      @id @default(autoincrement())
+  patientId      Int
+  patient        User     @relation(fields: [patientId], references: [id])
+
+  department     String
+  visitType      String
+  symptoms       String
+  diagnosis      String
+  prescription   String
+  severity       String
+  followUp       String
+  notes          String?
+
+  blockchainHash String?
+  createdAt      DateTime @default(now())
 }

@@ -13,7 +13,7 @@ export default function DashboardPage() {
         {/* Welcome Section */}
         <div className="mb-12 text-center">
           <h1 className="text-3xl md:text-4xl font-bold text-blue-600">
-            Welcome{user?.email ? `, ${user.email}` : ""} 👋
+            Welcome{user?.name ? `, ${user.name}` : ""} 👋
           </h1>
           <p className="text-slate-500 mt-2">
             Manage patient records securely and efficiently.
@@ -36,17 +36,17 @@ export default function DashboardPage() {
             </Link>
           </div>
 
-          {/* Register as Donor */}
+          
           <div className="card text-center">
             <h3 className="text-xl font-semibold mb-3 text-emerald-600">
-              Register as Donor
+              Create Record
             </h3>
             <p className="text-slate-500 mb-6 text-sm">
-              Enroll as a blood or organ donor securely.
+              Create a Medical Record
             </p>
             <br></br>
-            <Link href="/donor" className="btn-secondary w-full">
-              Register
+            <Link href="/doctor_submit" className="btn-secondary w-full">
+              Create
             </Link>
           </div>
 

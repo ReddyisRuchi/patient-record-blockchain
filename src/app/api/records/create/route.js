@@ -36,9 +36,20 @@ export async function POST(request) {
     }
 
     const body = await request.json();
-    const { patientId, diagnosis, treatment } = body;
 
-    if (!patientId || !diagnosis || !treatment) {
+    const {
+      patientId,
+      department,
+      visitType,
+      symptoms,
+      diagnosis,
+      prescription,
+      severity,
+      followUp,
+      notes,
+    } = body;
+
+    if (!patientId || !diagnosis || !prescription || !department) {
       return NextResponse.json(
         { message: "Missing required fields" },
         { status: 400 }
@@ -49,33 +60,45 @@ export async function POST(request) {
     const created = await prisma.patientRecord.create({
       data: {
         patientId: Number(patientId),
+        department,
+        visitType,
+        symptoms,
         diagnosis,
-        treatment,
+        prescription,
+        severity,
+        followUp,
+        notes,
       },
     });
 
-    // 2️⃣ Serialize for hashing
+    // 2️⃣ Serialize record for hashing
     const serialized = JSON.stringify({
       id: created.id,
       patientId: created.patientId,
+      department: created.department,
+      visitType: created.visitType,
+      symptoms: created.symptoms,
       diagnosis: created.diagnosis,
-      treatment: created.treatment,
+      prescription: created.prescription,
+      severity: created.severity,
+      followUp: created.followUp,
+      notes: created.notes,
       createdAt: created.createdAt,
     });
 
-    // 3️⃣ Generate SHA-256
+    // 3️⃣ Generate SHA256
     const hash = crypto
       .createHash("sha256")
       .update(serialized)
       .digest("hex");
 
     // 4️⃣ Store hash on blockchain
-    const contract = getContract();
+    const contract = await getContract();
     const tx = await contract.storeRecord(created.id, hash);
     await tx.wait();
 
     // 5️⃣ Save blockchain hash in DB
-    await prisma.patientRecord.update({
+    const updated = await prisma.patientRecord.update({
       where: { id: created.id },
       data: { blockchainHash: hash },
     });
@@ -83,7 +106,7 @@ export async function POST(request) {
     return NextResponse.json(
       {
         message: "Record created successfully!",
-        record: { ...created, blockchainHash: hash },
+        record: updated,
       },
       { status: 201 }
     );

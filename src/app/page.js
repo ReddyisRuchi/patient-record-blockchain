@@ -14,7 +14,7 @@ export default function Home() {
       <section className="py-20 bg-slate-50">
         <div className="container-max text-center">
           <h2 className="text-3xl font-bold text-blue-600 mb-12">
-            Why Choose HealthChain?
+            Features
           </h2>
 
           <div className="grid md:grid-cols-3 gap-8">

@@ -121,6 +121,7 @@ export default function RegisterPage() {
               >
                 <option value="PATIENT">Patient</option>
                 <option value="DOCTOR">Doctor</option>
+                <option value="DONOR">Donor</option>
               </select>
             </div>
 
