@@ -28,7 +28,7 @@ export default function Navbar() {
     <div className="container-max flex justify-between items-center py-4">
       
       <div className="flex items-center gap-4">
-        <h1 className="nav-title">HealthChain</h1>
+       
 
         <div className="hidden md:flex gap-4 items-center">
 
@@ -52,8 +52,8 @@ export default function Navbar() {
 
               {/* Only doctors can see Submit */}
               {user?.role === "DOCTOR" && (
-                <Link href="/submit" className="text-slate-700 hover:text-blue-600">
-                  Submit
+                <Link href="/doctor_submit" className="text-slate-700 hover:text-blue-600">
+                  Create Record
                 </Link>
               )}
             </>

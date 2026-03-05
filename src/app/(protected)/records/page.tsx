@@ -149,43 +149,73 @@ export default function RecordsPage() {
             </div>
           ) : (
             <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-slate-200 text-slate-600 text-sm">
-                  <th className="py-3 px-4">Diagnosis</th>
-                  <th className="py-3 px-4">Treatment</th>
-                  <th className="py-3 px-4">Created At</th>
-                  <th className="py-3 px-4">Blockchain</th>
-                </tr>
-              </thead>
-              <tbody>
-                {records.map((record, index) => (
-                  <tr
-                    key={record.id}
-                    className={`border-b border-slate-100 ${
-                      index % 2 === 0 ? "bg-white" : "bg-slate-50"
-                    }`}
-                  >
-                    <td className="py-3 px-4">{record.diagnosis}</td>
-                    <td className="py-3 px-4">{record.treatment}</td>
-                    <td className="py-3 px-4 text-slate-600">
-                      {new Date(record.createdAt).toLocaleString()}
-                    </td>
-                    <td className="py-3 px-4 text-xs break-all text-slate-500">
-                      {record.blockchainHash ? (
-                        <div className="flex flex-col gap-1">
-                          <span className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full w-fit">
-                            On-Chain
-                          </span>
-                          {record.blockchainHash}
-                        </div>
-                      ) : (
-                        <span className="text-slate-400">Not Stored</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+  <thead>
+    <tr className="border-b border-slate-200 text-slate-600 text-sm">
+      <th className="py-3 px-4">Department</th>
+      <th className="py-3 px-4">Visit Type</th>
+      <th className="py-3 px-4">Diagnosis</th>
+      <th className="py-3 px-4">Prescription</th>
+      <th className="py-3 px-4">Severity</th>
+      <th className="py-3 px-4">Follow Up</th>
+      <th className="py-3 px-4">Created At</th>
+      <th className="py-3 px-4">Blockchain</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {records.map((record, index) => (
+      <tr
+        key={record.id}
+        className={`border-b border-slate-100 ${
+          index % 2 === 0 ? "bg-white" : "bg-slate-50"
+        }`}
+      >
+        <td className="py-3 px-4">{record.department}</td>
+
+        <td className="py-3 px-4">{record.visitType}</td>
+
+        <td className="py-3 px-4">{record.diagnosis}</td>
+
+        <td className="py-3 px-4">{record.prescription}</td>
+
+        <td className="py-3 px-4">
+          <span
+            className={`px-2 py-1 rounded-full text-xs ${
+              record.severity === "Critical"
+                ? "bg-red-100 text-red-600"
+                : record.severity === "Severe"
+                ? "bg-orange-100 text-orange-600"
+                : record.severity === "Moderate"
+                ? "bg-yellow-100 text-yellow-600"
+                : "bg-green-100 text-green-600"
+            }`}
+          >
+            {record.severity}
+          </span>
+        </td>
+
+        <td className="py-3 px-4">{record.followUp}</td>
+
+        <td className="py-3 px-4 text-slate-600">
+          {new Date(record.createdAt).toLocaleString()}
+        </td>
+
+        <td className="py-3 px-4 text-xs break-all text-slate-500">
+          {record.blockchainHash ? (
+            <div className="flex flex-col gap-1">
+              <span className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full w-fit">
+                On-Chain
+              </span>
+              {record.blockchainHash}
+            </div>
+          ) : (
+            <span className="text-slate-400">Not Stored</span>
+          )}
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
           )}
         </div>
 

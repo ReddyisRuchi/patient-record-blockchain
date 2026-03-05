@@ -1,24 +1,70 @@
 import { ethers } from "ethers";
-import MedicalRecord from "@/abi/MedicalRecord.json";
+import fs from "fs";
+import path from "path";
+import prisma from "@/lib/prisma";
+import crypto from "crypto";
 
-const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
-const RPC_URL = "http://127.0.0.1:8545";
+let contractInstance = null;
 
-export function getContract() {
-  if (!process.env.HARDHAT_PRIVATE_KEY) {
-    throw new Error("HARDHAT_PRIVATE_KEY not set in .env.local");
+async function bootstrap() {
+  if (contractInstance) return contractInstance;
+
+  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:8545");
+  const signer = await provider.getSigner(0);
+
+  const artifactPath = path.join(
+    process.cwd(),
+    "artifacts",
+    "contracts",
+    "MedicalRecord.sol",
+    "MedicalRecord.json"
+  );
+
+  const artifact = JSON.parse(fs.readFileSync(artifactPath, "utf-8"));
+
+  const factory = new ethers.ContractFactory(
+    artifact.abi,
+    artifact.bytecode,
+    signer
+  );
+
+  // 🚀 1️⃣ Deploy contract
+  const contract = await factory.deploy();
+  await contract.waitForDeployment();
+
+  contractInstance = contract;
+
+  console.log("Contract deployed at:", await contract.getAddress());
+
+  // 🚀 2️⃣ SYNC DATABASE RECORDS TO BLOCKCHAIN
+  const records = await prisma.patientRecord.findMany();
+
+  for (const record of records) {
+    const serialized = JSON.stringify({
+      id: record.id,
+      patientId: record.patientId,
+      diagnosis: record.diagnosis,
+      treatment: record.treatment,
+      createdAt: record.createdAt,
+    });
+
+    const hash = crypto
+      .createHash("sha256")
+      .update(serialized)
+      .digest("hex");
+
+    const tx = await contract.storeRecord(record.id, hash);
+    await tx.wait();
   }
 
-  const provider = new ethers.JsonRpcProvider(RPC_URL);
+  console.log("Synced records:", records.length);
 
-  const wallet = new ethers.Wallet(
-    process.env.HARDHAT_PRIVATE_KEY,
-    provider
-  );
+  return contractInstance;
+}
 
-  return new ethers.Contract(
-    CONTRACT_ADDRESS,
-    MedicalRecord.abi,
-    wallet
-  );
+export async function getContract() {
+  if (!contractInstance) {
+    await bootstrap();
+  }
+  return contractInstance;
 }
