@@ -5,7 +5,8 @@ import useAuth from "@/hooks/useAuth";
 
 export default function DashboardPage() {
   const { user } = useAuth();
-
+const submitRoute =
+    user?.role === "PATIENT" ? "/patient_submit" : "/doctor_submit";
   return (
     <div className="min-h-screen bg-slate-50 py-16 px-4">
       <div className="mx-auto w-full max-w-5xl">
@@ -45,7 +46,7 @@ export default function DashboardPage() {
               Create a Medical Record
             </p>
             <br></br>
-            <Link href="/doctor_submit" className="btn-secondary w-full">
+            <Link href={submitRoute} className="btn-secondary w-full">
               Create
             </Link>
           </div>

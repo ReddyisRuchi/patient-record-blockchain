@@ -22,7 +22,7 @@ export default function Navbar() {
 
   const isLoggedIn = Boolean(user);
 
-  // ✅ Dynamic route based on role
+
   const submitRoute =
     user?.role === "PATIENT" ? "/patient_submit" : "/doctor_submit";
 
