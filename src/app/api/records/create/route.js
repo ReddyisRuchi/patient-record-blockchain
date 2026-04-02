@@ -6,9 +6,20 @@ import { getContract } from "@/lib/blockchain";
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { patientId, diagnosis, treatment } = body;
 
-    if (!patientId || !diagnosis || !treatment) {
+    const {
+      patientId,
+      diagnosis,
+      symptoms,
+      prescription,
+      severity,
+      followUp,
+      department,
+      visitType
+    } = body;
+
+    // Basic validation
+    if (!patientId || !diagnosis || !symptoms || !prescription) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -20,17 +31,27 @@ export async function POST(req) {
       data: {
         patientId,
         diagnosis,
-        treatment
+        symptoms,
+        prescription,
+        severity,
+        followUp,
+        department,
+        visitType
       }
     });
 
-    // 2️⃣ Serialize record
+    // 2️⃣ Serialize record for hashing
     const serialized = JSON.stringify({
       id: created.id,
       patientId: created.patientId,
       diagnosis: created.diagnosis,
-      treatment: created.treatment,
-      createdAt: created.createdAt,
+      symptoms: created.symptoms,
+      prescription: created.prescription,
+      severity: created.severity,
+      followUp: created.followUp,
+      department: created.department,
+      visitType: created.visitType,
+      createdAt: created.createdAt
     });
 
     // 3️⃣ Generate SHA256 hash
@@ -40,7 +61,7 @@ export async function POST(req) {
       .digest("hex");
 
     // 4️⃣ Store hash on blockchain
-    const contract = getContract();
+    const contract = await getContract();
     const tx = await contract.storeRecord(created.id, hash);
     await tx.wait();
 
@@ -59,6 +80,7 @@ export async function POST(req) {
 
   } catch (error) {
     console.error(error);
+
     return NextResponse.json(
       { error: "Failed to create record" },
       { status: 500 }

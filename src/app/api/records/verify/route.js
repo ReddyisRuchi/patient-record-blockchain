@@ -21,11 +21,16 @@ export async function GET(req) {
     }
 
     const serialized = JSON.stringify({
-      id: record.id,
-      patientId: record.patientId,
-      diagnosis: record.diagnosis,
-      treatment: record.treatment,
-      createdAt: record.createdAt,
+       id: record.id,
+        patientId: record.patientId,
+        diagnosis: record.diagnosis,
+        symptoms: record.symptoms,
+        prescription: record.prescription,
+        severity: record.severity,
+        followUp: record.followUp,
+        department: record.department,
+        visitType: record.visitType,
+        createdAt: record.createdAt,
     });
 
     const recomputedHash = crypto
@@ -33,7 +38,7 @@ export async function GET(req) {
       .update(serialized)
       .digest("hex");
 
-    const contract = getContract();
+    const contract = await getContract();
     const blockchainRecord = await contract.getRecord(record.id);
     const blockchainHash = blockchainRecord[0];
 
