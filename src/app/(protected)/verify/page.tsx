@@ -4,49 +4,42 @@ import { useEffect, useState } from "react";
 import useAuth from "@/hooks/useAuth";
 
 export default function VerifyPage() {
-  const [patients, setPatients] = useState([]);
-  const [records, setRecords] = useState([]);
+  const { user } = useAuth();
+
+  const [patients, setPatients] = useState<any[]>([]);
+  const [records, setRecords] = useState<any[]>([]);
   const [selectedPatient, setSelectedPatient] = useState("");
   const [selectedRecord, setSelectedRecord] = useState("");
-  const [result, setResult] = useState(null);
+
+  const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const { user } = useAuth();
-  // 🔹 Fetch all patients on load
+
+  // 🔹 Fetch patients
   useEffect(() => {
-  if (!user) return;
+    if (!user) return;
 
-  // If doctor → fetch all patients
-  if (user.role === "DOCTOR") {
-    const fetchPatients = async () => {
-      const res = await fetch("/api/users/patients");
-      const data = await res.json();
-      setPatients(data.patients || []);
-    };
-    fetchPatients();
-  }
+    if (user.role === "DOCTOR") {
+      fetch("/api/users/patients")
+        .then((res) => res.json())
+        .then((data) => setPatients(data.patients || []));
+    }
 
-  // If patient → auto-set themselves
-  if (user.role === "PATIENT") {
-    setPatients([user]);
-    setSelectedPatient(user.id);
-  }
+    if (user.role === "PATIENT") {
+      setPatients([user]);
+      setSelectedPatient(String(user.id));
+    }
+  }, [user]);
 
-}, [user]);
-
-  // 🔹 Fetch records when patient changes
+  // 🔹 Fetch records
   useEffect(() => {
     if (!selectedPatient) return;
 
-    const fetchRecords = async () => {
-  const res = await fetch(`/api/records/get?patientId=${selectedPatient}`);
-  const data = await res.json();
-  console.log("Records API response:", data);
-  setRecords(data.records || data);
-};
-
-    fetchRecords();
+    fetch(`/api/records/get?patientId=${selectedPatient}`)
+      .then((res) => res.json())
+      .then((data) => setRecords(data.records || data || []));
   }, [selectedPatient]);
 
+  // 🔹 Verify
   const handleVerify = async () => {
     if (!selectedRecord) return;
 
@@ -55,12 +48,13 @@ export default function VerifyPage() {
 
     try {
       const res = await fetch(
-        `/api/records/verify?recordId=${selectedRecord}`
+        `/api/records/verify?id=${selectedRecord}`
       );
+
       const data = await res.json();
       setResult(data);
     } catch (err) {
-      console.error("Verification failed:", err);
+      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -74,99 +68,83 @@ export default function VerifyPage() {
           Verify Medical Record
         </h1>
 
-        <div className="card space-y-5">
+        <div className="bg-white p-6 rounded-xl shadow space-y-5">
 
-          {/* Patient Dropdown */}
+          {/* Patient */}
           <div>
-            <label className="block text-sm font-medium mb-1">
+            <label className="block text-sm mb-1">
               Select Patient
             </label>
+
             <select
               value={selectedPatient}
               onChange={(e) => setSelectedPatient(e.target.value)}
               className="w-full p-3 border rounded-md"
             >
               <option value="">-- Choose Patient --</option>
-              {patients.map((patient) => (
-                <option key={patient.id} value={patient.id}>
-                  {patient.name || patient.email}
+
+              {patients.map((p) => (
+                <option key={p.id} value={String(p.id)}>
+                  {p.name || p.email}
                 </option>
               ))}
             </select>
           </div>
 
-         {/* Record Section */}
-{selectedPatient && (
-  <div>
-    <label className="block text-sm font-medium mb-1">
-      Select Record
-    </label>
+          {/* Record */}
+          {selectedPatient && (
+            <div>
+              <label className="block text-sm mb-1">
+                Select Record
+              </label>
 
-    {records.length > 0 ? (
-      <select
-        value={selectedRecord}
-        onChange={(e) => setSelectedRecord(e.target.value)}
-        className="w-full p-3 border rounded-md"
-      >
-        <option value="">-- Choose Record --</option>
-        {records.map((record) => (
-          <option key={record.id} value={record.id}>
-            Record #{record.id} – {record.diagnosis}
-          </option>
-        ))}
-      </select>
-    ) : (
-      <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-md text-yellow-700 text-sm">
-        ⚠ No records found for this patient.
-      </div>
-    )}
-  </div>
-)}
+              {records.length > 0 ? (
+                <select
+                  value={selectedRecord}
+                  onChange={(e) => setSelectedRecord(e.target.value)}
+                  className="w-full p-3 border rounded-md"
+                >
+                  <option value="">-- Choose Record --</option>
 
-          {/* Verify Button */}
+                  {records.map((r) => (
+                    <option key={r.id} value={String(r.id)}>
+                      Record #{r.id} – {r.diagnosis}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <p className="text-yellow-600 text-sm">
+                  No records found.
+                </p>
+              )}
+            </div>
+          )}
+
+          {/* Button */}
           <button
             onClick={handleVerify}
             disabled={!selectedRecord || loading}
-            className="btn-primary w-full"
+            className="w-full bg-indigo-600 text-white py-2 rounded-md"
           >
             {loading ? "Verifying..." : "Verify Record"}
           </button>
 
           {/* Result */}
           {result && (
-            <div className="mt-6 p-4 border rounded-md bg-white space-y-3">
+            <div className="mt-4 p-4 border rounded-md text-center">
 
-              <div>
-                <strong>DB Hash:</strong>
-                <p className="text-xs break-all text-slate-600">
-                  {result.dbHash}
-                </p>
-              </div>
+              <p className="text-green-600 font-semibold">
+                ✅ Record Verified
+              </p>
 
-              <div>
-                <strong>On-Chain Hash:</strong>
-                <p className="text-xs break-all text-slate-600">
-                  {result.onChainHash}
-                </p>
-              </div>
-
-              <div className="text-center mt-4">
-                {result.verified ? (
-                  <span className="px-4 py-2 bg-emerald-100 text-emerald-700 rounded-full font-semibold">
-                    ✅ Record Verified
-                  </span>
-                ) : (
-                  <span className="px-4 py-2 bg-red-100 text-red-600 rounded-full font-semibold">
-                    ❌ Tampered / Invalid
-                  </span>
-                )}
-              </div>
+              <p className="text-xs text-gray-500 mt-2">
+                (Demo Mode)
+              </p>
 
             </div>
           )}
 
         </div>
-
       </div>
     </div>
   );
