@@ -6,31 +6,47 @@ import useAuth from "@/hooks/useAuth";
 export default function SubmitPage() {
   const { user } = useAuth();
 
-  const [patients, setPatients] = useState([]);
-  const [patientId, setPatientId] = useState("");
-  const [createdRecord, setCreatedRecord] = useState(null);
+  const [patients, setPatients] = useState<any[]>([]);
+  const [patientId, setPatientId] = useState<string>("");
+  const [createdRecord, setCreatedRecord] = useState<any>(null);
+  const [loadingPatients, setLoadingPatients] = useState(true);
 
   const isLoggedIn = Boolean(user);
   const isDoctor = user?.role === "DOCTOR";
 
-  // Fetch patients
+  // 🔁 Fetch patients
   useEffect(() => {
-    if (isDoctor) {
-      fetch("/api/users/patients", {
-        credentials: "same-origin",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.patients) {
-            setPatients(data.patients);
-          }
-        })
-        .catch((err) => console.error(err));
-    }
+    if (!isDoctor) return;
+
+    const fetchPatients = async () => {
+      try {
+        const res = await fetch("/api/users/patients", {
+          credentials: "same-origin",
+        });
+
+        const data = await res.json();
+
+        console.log("PATIENTS API RESPONSE:", data); // 🧪 DEBUG
+
+        if (data?.patients) {
+          setPatients(data.patients);
+        } else {
+          setPatients([]);
+        }
+      } catch (err) {
+        console.error("Error fetching patients:", err);
+      } finally {
+        setLoadingPatients(false);
+      }
+    };
+
+    fetchPatients();
   }, [isDoctor]);
 
-  async function handleSubmit(e) {
+  // 📝 Submit form
+  async function handleSubmit(e: any) {
     e.preventDefault();
+
     if (!isLoggedIn || !isDoctor) return;
 
     if (!patientId) {
@@ -39,16 +55,16 @@ export default function SubmitPage() {
     }
 
     const formData = {
-  patientId,
-  department: e.target.department.value,
-  visitType: e.target.visitType.value,
-  symptoms: e.target.symptoms.value,
-  diagnosis: e.target.diagnosis.value,
-  prescription: e.target.prescription.value,
-  severity: e.target.severity.value,
-  followUp: e.target.followUp.value,
-  notes: e.target.notes.value,
-};
+      patientId: Number(patientId), // ✅ ensure number
+      department: e.target.department.value,
+      visitType: e.target.visitType.value,
+      symptoms: e.target.symptoms.value,
+      diagnosis: e.target.diagnosis.value,
+      prescription: e.target.prescription.value,
+      severity: e.target.severity.value,
+      followUp: e.target.followUp.value,
+      notes: e.target.notes.value,
+    };
 
     try {
       const res = await fetch("/api/records/create", {
@@ -68,7 +84,7 @@ export default function SubmitPage() {
         alert(data.error || "Failed to create record");
       }
     } catch (err) {
-      console.error(err);
+      console.error("Error creating record:", err);
     }
   }
 
@@ -83,8 +99,9 @@ export default function SubmitPage() {
           Create Medical Record
         </h1>
 
-        <div className="card">
+        <div className="bg-white p-6 rounded-xl shadow">
 
+          {/* Auth Checks */}
           {!isLoggedIn && (
             <p className="text-sm text-red-500 mb-6 text-center">
               You must be logged in.
@@ -97,46 +114,60 @@ export default function SubmitPage() {
             </p>
           )}
 
+          {/* FORM */}
           {isDoctor && (
             <form onSubmit={handleSubmit} className="space-y-6">
 
-              {/* Patient */}
+              {/* 👤 Patient Dropdown */}
               <div>
                 <label className="block mb-1 text-sm text-slate-600">
                   Select Patient
                 </label>
-                <select
-                  value={patientId}
-                  onChange={(e) => setPatientId(e.target.value)}
-                  className={inputStyle}
-                  required
-                >
-                  <option value="">-- Select Patient --</option>
-                  {patients.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name || p.email} (ID: {p.id})
-                    </option>
-                  ))}
+
+                {loadingPatients ? (
+                  <p className="text-sm text-gray-500">Loading patients...</p>
+                ) : patients.length === 0 ? (
+                  <p className="text-sm text-red-500">
+                    No patients found. Please register a patient first.
+                  </p>
+                ) : (
+                  <select
+                    value={patientId}
+                    onChange={(e) => setPatientId(e.target.value)}
+                    className={inputStyle}
+                    required
+                  >
+                    <option value="">-- Select Patient --</option>
+
+                    {patients.map((p) => (
+                      <option key={p.id} value={String(p.id)}>
+                        {p.name || p.email} (ID: {p.id})
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
+
+              {/* Department */}
+              <div>
+                <label className="block mb-1 text-sm text-slate-600">
+                  Department
+                </label>
+                <select name="department" className={inputStyle} required>
+                  <option value="">Select Department</option>
+                  <option>General Medicine</option>
+                  <option>Cardiology</option>
+                  <option>Neurology</option>
+                  <option>Orthopedics</option>
+                  <option>Dermatology</option>
+                  <option>Pediatrics</option>
+                  <option>ENT</option>
+                  <option>Gastroenterology</option>
+                  <option>Pulmonology</option>
+                  <option>Endocrinology</option>
                 </select>
               </div>
-              <div>
-  <label className="block mb-1 text-sm text-slate-600">
-    Department
-  </label>
-  <select name="department" className={inputStyle} required>
-    <option value="">Select Department</option>
-    <option>General Medicine</option>
-    <option>Cardiology</option>
-    <option>Neurology</option>
-    <option>Orthopedics</option>
-    <option>Dermatology</option>
-    <option>Pediatrics</option>
-    <option>ENT</option>
-    <option>Gastroenterology</option>
-    <option>Pulmonology</option>
-    <option>Endocrinology</option>
-  </select>
-</div>
+
               {/* Visit Type */}
               <div>
                 <label className="block mb-1 text-sm text-slate-600">
@@ -152,98 +183,71 @@ export default function SubmitPage() {
               </div>
 
               {/* Symptoms */}
-              <div>
-                <label className="block mb-1 text-sm text-slate-600">
-                  Symptoms
-                </label>
-                <textarea
-                  name="symptoms"
-                  required
-                  rows="3"
-                  className={inputStyle}
-                  placeholder="e.g., fever, headache, cough..."
-                />
-              </div>
+              <textarea
+                name="symptoms"
+                required
+                rows={3}
+                className={inputStyle}
+                placeholder="Symptoms..."
+              />
 
               {/* Diagnosis */}
-              <div>
-                <label className="block mb-1 text-sm text-slate-600">
-                  Diagnosis
-                </label>
-                <textarea
-                  name="diagnosis"
-                  required
-                  rows="3"
-                  className={inputStyle}
-                />
-              </div>
+              <textarea
+                name="diagnosis"
+                required
+                rows={3}
+                className={inputStyle}
+                placeholder="Diagnosis..."
+              />
 
               {/* Prescription */}
-              <div>
-                <label className="block mb-1 text-sm text-slate-600">
-                  Prescription / Medication
-                </label>
-                <textarea
-                  name="prescription"
-                  required
-                  rows="3"
-                  className={inputStyle}
-                  placeholder="Medication and dosage instructions"
-                />
-              </div>
+              <textarea
+                name="prescription"
+                required
+                rows={3}
+                className={inputStyle}
+                placeholder="Prescription..."
+              />
 
               {/* Severity */}
-              <div>
-                <label className="block mb-1 text-sm text-slate-600">
-                  Severity
-                </label>
-                <select name="severity" className={inputStyle} required>
-                  <option value="">Select Severity</option>
-                  <option>Mild</option>
-                  <option>Moderate</option>
-                  <option>Severe</option>
-                  <option>Critical</option>
-                </select>
-              </div>
+              <select name="severity" className={inputStyle} required>
+                <option value="">Select Severity</option>
+                <option>Mild</option>
+                <option>Moderate</option>
+                <option>Severe</option>
+                <option>Critical</option>
+              </select>
 
               {/* Follow Up */}
-              <div>
-                <label className="block mb-1 text-sm text-slate-600">
-                  Follow-up Required
-                </label>
-                <select name="followUp" className={inputStyle}>
-                  <option>No Follow-up</option>
-                  <option>3 days</option>
-                  <option>1 week</option>
-                  <option>2 weeks</option>
-                  <option>1 month</option>
-                </select>
-              </div>
+              <select name="followUp" className={inputStyle}>
+                <option>No Follow-up</option>
+                <option>3 days</option>
+                <option>1 week</option>
+                <option>2 weeks</option>
+                <option>1 month</option>
+              </select>
 
               {/* Notes */}
-              <div>
-                <label className="block mb-1 text-sm text-slate-600">
-                  Doctor Notes (Optional)
-                </label>
-                <textarea
-                  name="notes"
-                  rows="3"
-                  className={inputStyle}
-                  placeholder="Additional clinical notes..."
-                />
-              </div>
+              <textarea
+                name="notes"
+                rows={3}
+                className={inputStyle}
+                placeholder="Additional notes..."
+              />
 
-              <button type="submit" className="btn-primary w-full">
+              <button
+                type="submit"
+                className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+              >
                 Save Record
               </button>
-
             </form>
           )}
         </div>
 
-        {/* Success Display */}
+        {/* ✅ Success */}
         {createdRecord && (
-          <div className="card mt-6">
+          <div className="bg-white p-6 rounded-xl shadow mt-6">
             <h2 className="text-lg font-semibold mb-4 text-green-600">
               Record Created Successfully
             </h2>
@@ -257,7 +261,6 @@ export default function SubmitPage() {
             </p>
           </div>
         )}
-
       </div>
     </div>
   );
