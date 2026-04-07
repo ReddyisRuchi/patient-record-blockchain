@@ -7,61 +7,44 @@ export default function DashboardPage() {
   const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-slate-50 py-16 px-4">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-16 px-4">
       <div className="mx-auto w-full max-w-5xl">
 
-        {/* Welcome Section */}
-        <div className="mb-12 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold text-blue-600">
-            Welcome{user?.name ? `, ${user.name}` : ""} 👋
+        <div className="mb-12 text-center fade-in fade-in-1">
+          <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white">
+            Welcome{user?.name ? `, ${user.name}` : ""}
           </h1>
-          <p className="text-slate-500 mt-2">
+          <p className="text-slate-500 dark:text-slate-400 mt-2">
             Manage patient records securely and efficiently.
           </p>
         </div>
 
-        {/* Action Cards */}
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="flex flex-wrap justify-center gap-6">
 
-          {/* View Records */}
-          <div className="card text-center">
-            <h3 className="text-xl font-semibold mb-3 text-blue-600">
-              View Records
-            </h3>
-            <p className="text-slate-500 mb-6 text-sm">
+          <div className="card flex flex-col text-center w-full max-w-xs fade-in fade-in-2">
+            <h3 className="text-xl font-semibold mb-3 text-slate-900 dark:text-white">View Records</h3>
+            <p className="text-slate-500 dark:text-slate-400 mb-6 text-sm flex-1">
               Access and review previously submitted patient records.
             </p>
-            <Link href="/records" className="btn-primary w-full">
-              Open
-            </Link>
+            <Link href="/records" className="btn-primary w-full">Open</Link>
           </div>
 
-          
-          <div className="card text-center">
-            <h3 className="text-xl font-semibold mb-3 text-emerald-600">
-              Create Record
-            </h3>
-            <p className="text-slate-500 mb-6 text-sm">
-              Create a Medical Record
-            </p>
-            <br></br>
-            <Link href="/doctor_submit" className="btn-secondary w-full">
-              Create
-            </Link>
-          </div>
+          {user?.role === "HEALTHCARE_ADMIN" && (
+            <div className="card flex flex-col text-center w-full max-w-xs fade-in fade-in-3">
+              <h3 className="text-xl font-semibold mb-3 text-slate-900 dark:text-white">Create Record</h3>
+              <p className="text-slate-500 dark:text-slate-400 mb-6 text-sm flex-1">
+                Submit a new medical record for a patient.
+              </p>
+              <Link href="/doctor_submit" className="btn-primary w-full">Create</Link>
+            </div>
+          )}
 
-          {/* Verify Record */}
-          <div className="card text-center">
-            <h3 className="text-xl font-semibold mb-3 text-indigo-600">
-              Verify Record
-            </h3>
-            <p className="text-slate-500 mb-6 text-sm">
-              Validate patient record integrity.
+          <div className="card flex flex-col text-center w-full max-w-xs fade-in fade-in-4">
+            <h3 className="text-xl font-semibold mb-3 text-slate-900 dark:text-white">Verify Record</h3>
+            <p className="text-slate-500 dark:text-slate-400 mb-6 text-sm flex-1">
+              Validate patient record integrity on-chain.
             </p>
-            <br></br>
-            <Link href="/verify" className="btn-outline w-full">
-  Verify
-</Link> 
+            <Link href="/verify" className="btn-outline w-full">Verify</Link>
           </div>
 
         </div>

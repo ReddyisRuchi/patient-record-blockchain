@@ -12,7 +12,7 @@ export default function SubmitPage() {
   const [loadingPatients, setLoadingPatients] = useState(true);
 
   const isLoggedIn = Boolean(user);
-  const isDoctor = user?.role === "DOCTOR";
+  const isDoctor = user?.role === "HEALTHCARE_ADMIN";
 
   // 🔁 Fetch patients
   useEffect(() => {
@@ -89,17 +89,17 @@ export default function SubmitPage() {
   }
 
   const inputStyle =
-    "w-full px-4 py-2.5 border border-slate-200 rounded-lg bg-white focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none transition";
+    "w-full px-4 py-2.5 border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 dark:text-slate-100 focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none transition";
 
   return (
-    <div className="min-h-screen bg-slate-50 py-16 px-4">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-16 px-4">
       <div className="mx-auto w-full max-w-2xl">
 
-        <h1 className="text-3xl font-bold text-blue-600 mb-8 text-center">
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center">
           Create Medical Record
         </h1>
 
-        <div className="bg-white p-6 rounded-xl shadow">
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow">
 
           {/* Auth Checks */}
           {!isLoggedIn && (
@@ -110,7 +110,7 @@ export default function SubmitPage() {
 
           {isLoggedIn && !isDoctor && (
             <p className="text-sm text-red-500 mb-6 text-center">
-              Only DOCTORS can create records.
+              Only Healthcare Admins can create records.
             </p>
           )}
 
@@ -120,29 +120,16 @@ export default function SubmitPage() {
 
               {/* 👤 Patient Dropdown */}
               <div>
-                <label className="block mb-1 text-sm text-slate-600">
-                  Select Patient
-                </label>
-
+                <label className="form-label">Select Patient</label>
                 {loadingPatients ? (
-                  <p className="text-sm text-gray-500">Loading patients...</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">Loading patients...</p>
                 ) : patients.length === 0 ? (
-                  <p className="text-sm text-red-500">
-                    No patients found. Please register a patient first.
-                  </p>
+                  <p className="text-sm text-red-500">No patients found. Please register a patient first.</p>
                 ) : (
-                  <select
-                    value={patientId}
-                    onChange={(e) => setPatientId(e.target.value)}
-                    className={inputStyle}
-                    required
-                  >
+                  <select value={patientId} onChange={(e) => setPatientId(e.target.value)} className={inputStyle} required>
                     <option value="">-- Select Patient --</option>
-
                     {patients.map((p) => (
-                      <option key={p.id} value={String(p.id)}>
-                        {p.name || p.email} (ID: {p.id})
-                      </option>
+                      <option key={p.id} value={String(p.id)}>{p.name || p.email} (ID: {p.id})</option>
                     ))}
                   </select>
                 )}
@@ -150,9 +137,7 @@ export default function SubmitPage() {
 
               {/* Department */}
               <div>
-                <label className="block mb-1 text-sm text-slate-600">
-                  Department
-                </label>
+                <label className="form-label">Department</label>
                 <select name="department" className={inputStyle} required>
                   <option value="">Select Department</option>
                   <option>General Medicine</option>
@@ -170,9 +155,7 @@ export default function SubmitPage() {
 
               {/* Visit Type */}
               <div>
-                <label className="block mb-1 text-sm text-slate-600">
-                  Visit Type
-                </label>
+                <label className="form-label">Visit Type</label>
                 <select name="visitType" className={inputStyle} required>
                   <option value="">Select Visit Type</option>
                   <option>General Checkup</option>
@@ -237,7 +220,7 @@ export default function SubmitPage() {
 
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+                className="btn-primary w-full"
               >
                 Save Record
               </button>
@@ -245,18 +228,15 @@ export default function SubmitPage() {
           )}
         </div>
 
-        {/* ✅ Success */}
         {createdRecord && (
-          <div className="bg-white p-6 rounded-xl shadow mt-6">
-            <h2 className="text-lg font-semibold mb-4 text-green-600">
-              Record Created Successfully
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow mt-6">
+            <h2 className="text-lg font-semibold mb-4 text-slate-900 dark:text-white">
+              Record Created
             </h2>
-
             <p><strong>Patient ID:</strong> {createdRecord.patientId}</p>
             <p><strong>Diagnosis:</strong> {createdRecord.diagnosis}</p>
             <p><strong>Prescription:</strong> {createdRecord.prescription}</p>
-
-            <p className="text-sm text-slate-500 mt-2">
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
               {new Date(createdRecord.createdAt).toLocaleString()}
             </p>
           </div>

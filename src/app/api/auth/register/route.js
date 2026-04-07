@@ -30,7 +30,7 @@ export async function POST(request) {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const allowedRoles = ["PATIENT", "DOCTOR", "ADMIN"];
+    const allowedRoles = ["PATIENT", "HEALTHCARE_ADMIN", "ADMIN"];
     const userRole = allowedRoles.includes(role) ? role : "PATIENT";
 
     // Create the user

@@ -18,7 +18,7 @@ export default function VerifyPage() {
   useEffect(() => {
     if (!user) return;
 
-    if (user.role === "DOCTOR") {
+    if (user.role === "HEALTHCARE_ADMIN") {
       fetch("/api/users/patients")
         .then((res) => res.json())
         .then((data) => setPatients(data.patients || []));
@@ -61,32 +61,26 @@ export default function VerifyPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 py-16 px-4">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-16 px-4">
       <div className="mx-auto max-w-2xl">
 
-        <h1 className="text-3xl font-bold text-indigo-600 mb-8 text-center">
-          Verify Medical Record
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center">
+          Verify Record
         </h1>
 
-        <div className="bg-white p-6 rounded-xl shadow space-y-5">
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow space-y-5">
 
           {/* Patient */}
           <div>
-            <label className="block text-sm mb-1">
-              Select Patient
-            </label>
-
+            <label className="form-label">Select Patient</label>
             <select
               value={selectedPatient}
               onChange={(e) => setSelectedPatient(e.target.value)}
-              className="w-full p-3 border rounded-md"
+              className="w-full p-3 border border-slate-200 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
             >
               <option value="">-- Choose Patient --</option>
-
               {patients.map((p) => (
-                <option key={p.id} value={String(p.id)}>
-                  {p.name || p.email}
-                </option>
+                <option key={p.id} value={String(p.id)}>{p.name || p.email}</option>
               ))}
             </select>
           </div>
@@ -94,28 +88,20 @@ export default function VerifyPage() {
           {/* Record */}
           {selectedPatient && (
             <div>
-              <label className="block text-sm mb-1">
-                Select Record
-              </label>
-
+              <label className="form-label">Select Record</label>
               {records.length > 0 ? (
                 <select
                   value={selectedRecord}
                   onChange={(e) => setSelectedRecord(e.target.value)}
-                  className="w-full p-3 border rounded-md"
+                  className="w-full p-3 border border-slate-200 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
                 >
                   <option value="">-- Choose Record --</option>
-
                   {records.map((r) => (
-                    <option key={r.id} value={String(r.id)}>
-                      Record #{r.id} – {r.diagnosis}
-                    </option>
+                    <option key={r.id} value={String(r.id)}>Record #{r.id} – {r.diagnosis}</option>
                   ))}
                 </select>
               ) : (
-                <p className="text-yellow-600 text-sm">
-                  No records found.
-                </p>
+                <p className="text-yellow-600 text-sm">No records found.</p>
               )}
             </div>
           )}
@@ -124,26 +110,17 @@ export default function VerifyPage() {
           <button
             onClick={handleVerify}
             disabled={!selectedRecord || loading}
-            className="w-full bg-indigo-600 text-white py-2 rounded-md"
+            className="btn-primary w-full disabled:opacity-50"
           >
             {loading ? "Verifying..." : "Verify Record"}
           </button>
 
-          {/* Result */}
           {result && (
-            <div className="mt-4 p-4 border rounded-md text-center">
-
-              <p className="text-green-600 font-semibold">
-                ✅ Record Verified
-              </p>
-
-              <p className="text-xs text-gray-500 mt-2">
-                (Demo Mode)
-              </p>
-
+            <div className="mt-4 p-4 border border-slate-200 dark:border-slate-600 rounded-lg text-center">
+              <p className="text-slate-900 dark:text-white font-semibold">Record Verified</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Integrity confirmed on-chain</p>
             </div>
           )}
-
         </div>
       </div>
     </div>

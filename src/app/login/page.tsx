@@ -33,38 +33,24 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <Navbar />
 
       <div className="flex items-center justify-center px-4 py-20">
         <div className="card w-full max-w-md">
-          <h2 className="text-2xl font-bold text-blue-600 mb-6 text-center">
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6 text-center">
             Sign In
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="form-control">
-              <label className="block mb-1 text-sm text-slate-600">
-                Email
-              </label>
-              <input
-                name="email"
-                type="email"
-                placeholder="Enter your email"
-                required
-              />
+              <label className="form-label">Email</label>
+              <input name="email" type="email" placeholder="Enter your email" required />
             </div>
 
             <div className="form-control">
-              <label className="block mb-1 text-sm text-slate-600">
-                Password
-              </label>
-              <input
-                name="password"
-                type="password"
-                placeholder="Enter your password"
-                required
-              />
+              <label className="form-label">Password</label>
+              <input name="password" type="password" placeholder="Enter your password" required />
             </div>
 
             <button type="submit" className="btn-primary w-full">
