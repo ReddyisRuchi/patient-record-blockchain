@@ -4,18 +4,18 @@ import { getContract } from "@/lib/blockchain";
 export async function GET(req) {
   try {
     const { searchParams } = new URL(req.url);
-    const recordId = searchParams.get("id");
+    const donationId = searchParams.get("id"); 
 
-    if (!recordId) {
+    if (!donationId) {
       return NextResponse.json(
-        { error: "Record ID is required" },
+        { error: "Donation ID is required" }, 
         { status: 400 }
       );
     }
 
     const contract = await getContract();
 
-    const events = await contract.getHistory(Number(recordId));
+    const events = await contract.getHistory(Number(donationId)); 
 
     // ✅ SAFE parsing (works for all ethers versions)
     const formatted = events.map((event) => {
