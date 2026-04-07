@@ -26,13 +26,15 @@ export async function GET() {
       const now = new Date();
       const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-      const [totalRecords, totalPatients, thisMonth] = await Promise.all([
+      const [totalRecords, totalPatients, thisMonth, totalDonations, expiringDonations] = await Promise.all([
         prisma.patientRecord.count(),
         prisma.user.count({ where: { role: "PATIENT" } }),
         prisma.patientRecord.count({ where: { createdAt: { gte: startOfMonth } } }),
+        prisma.donation.count(),
+        prisma.donation.count({ where: { expiryDate: { lte: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000) }, status: { not: "assigned" } } }),
       ]);
 
-      return NextResponse.json({ role: "HEALTHCARE_ADMIN", totalRecords, totalPatients, thisMonth });
+      return NextResponse.json({ role: "HEALTHCARE_ADMIN", totalRecords, totalPatients, thisMonth, totalDonations, expiringDonations });
     }
 
     return NextResponse.json({ error: "Access denied" }, { status: 403 });

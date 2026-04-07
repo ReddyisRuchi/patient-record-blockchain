@@ -152,13 +152,13 @@ export default function PatientProfilePage() {
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4 text-sm">
-            <div className="bg-slate-50 dark:bg-neutral-900 rounded-lg p-3">
-              <p className="text-slate-400 dark:text-slate-500 text-xs uppercase tracking-wider mb-1">Total Records</p>
+            <div className="bg-slate-100 dark:bg-neutral-800 rounded-lg p-3">
+              <p className="text-slate-500 dark:text-neutral-400 text-xs uppercase tracking-wider mb-1">Total Records</p>
               <p className="text-2xl font-bold text-slate-900 dark:text-white">{records.length}</p>
             </div>
-            <div className="bg-slate-50 dark:bg-neutral-900 rounded-lg p-3">
-              <p className="text-slate-400 dark:text-slate-500 text-xs uppercase tracking-wider mb-1">Last Visit</p>
-              <p className="text-lg font-semibold text-slate-900 dark:text-white">
+            <div className="bg-slate-100 dark:bg-neutral-800 rounded-lg p-3">
+              <p className="text-slate-500 dark:text-neutral-400 text-xs uppercase tracking-wider mb-1">Last Visit</p>
+              <p className="text-2xl font-bold text-slate-900 dark:text-white">
                 {records[0] ? new Date(records[0].createdAt).toLocaleDateString() : "—"}
               </p>
             </div>

@@ -170,8 +170,13 @@ export default function RecordsPage() {
         {/* Table */}
         {!loading && filtered.length > 0 && (
           <div className="bg-white dark:bg-neutral-900 rounded-xl shadow overflow-hidden fade-in fade-in-3">
-            <div className="px-6 py-4 border-b dark:border-neutral-800">
-              <span className="text-sm text-slate-500 dark:text-slate-400">{filtered.length} record{filtered.length !== 1 ? "s" : ""}</span>
+            <div className="px-6 py-4 border-b dark:border-neutral-800 flex items-center justify-between">
+              <span className="text-sm text-slate-500 dark:text-slate-400">
+                {filtered.length} record{filtered.length !== 1 ? "s" : ""}
+                {patientId && patients.find(p => String(p.id) === patientId) && (
+                  <span className="ml-1">for <span className="font-medium text-slate-700 dark:text-slate-200">{patients.find(p => String(p.id) === patientId)?.name}</span></span>
+                )}
+              </span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
