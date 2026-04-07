@@ -3,24 +3,30 @@ import { getContract } from "@/lib/blockchain";
 
 export async function POST(req) {
   try {
-    const body = await req.json();
-    const { recordId, location, action } = body;
+    const { donationId, location, action } = await req.json();
 
-    const numericId = Number(recordId); // ✅ fix
+    if (!donationId || !location || !action) {
+      return NextResponse.json(
+        { error: "Missing fields" },
+        { status: 400 }
+      );
+    }
 
     const contract = await getContract();
 
-    const tx = await contract.addEvent(numericId, location, action);
+    const tx = await contract.addEvent(
+      donationId,
+      location,
+      action
+    );
+
     await tx.wait();
 
-    return NextResponse.json({
-      message: "Event added successfully",
-    });
-
-  } catch (error) {
-    console.error(error);
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error(err);
     return NextResponse.json(
-      { error: "Something went wrong" },
+      { error: "Failed to add event" },
       { status: 500 }
     );
   }
