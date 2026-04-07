@@ -64,13 +64,18 @@ export default function DashboardPage() {
             <p className="text-slate-500 dark:text-slate-400 mb-6 text-sm flex-1">
               Access and review previously submitted patient records.
             </p>
-            {recordCount !== null && (
-              <p className="text-xs text-slate-400 dark:text-slate-500 mb-4">
-                {recordCount} record{recordCount !== 1 ? "s" : ""}
-              </p>
-            )}
             <Link href="/records" className="btn-primary w-full">Open</Link>
           </div>
+
+          {user?.role === "PATIENT" && (
+            <div className="card flex flex-col text-center w-full max-w-xs">
+              <h3 className="text-xl font-semibold mb-3 text-slate-900 dark:text-white">Verify Record</h3>
+              <p className="text-slate-500 dark:text-slate-400 mb-6 text-sm flex-1">
+                Validate the integrity of your medical records on-chain.
+              </p>
+              <Link href="/verify" className="btn-outline w-full">Verify</Link>
+            </div>
+          )}
 
           {user?.role === "HEALTHCARE_ADMIN" && (
             <div className="card flex flex-col text-center w-full max-w-xs">
@@ -82,9 +87,8 @@ export default function DashboardPage() {
             </div>
           )}
 
-          {/* 🔥 REPLACED VERIFY WITH DONATIONS */}
           {user?.role === "HEALTHCARE_ADMIN" && (
-            <div className="card flex flex-col text-center w-full max-w-xs fade-in fade-in-4">
+            <div className="card flex flex-col text-center w-full max-w-xs">
               <h3 className="text-xl font-semibold mb-3 text-slate-900 dark:text-white">Donations Registry</h3>
               <p className="text-slate-500 dark:text-slate-400 mb-6 text-sm flex-1">
                 Manage and track all donations like an inventory system.
