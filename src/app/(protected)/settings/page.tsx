@@ -32,14 +32,14 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-16 px-4">
+    <div className="min-h-screen bg-slate-50 dark:bg-black py-16 px-4">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
       <div className="mx-auto max-w-lg">
         <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-8 fade-in fade-in-1">Settings</h1>
 
         {/* Profile info */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow p-6 mb-6 fade-in fade-in-2">
+        <div className="bg-white dark:bg-neutral-900 rounded-xl shadow p-6 mb-6 fade-in fade-in-2">
           <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Profile</h2>
           <div className="space-y-2 text-sm">
             <p><span className="text-slate-500 dark:text-slate-400">Name:</span> <span className="font-medium">{user?.name}</span></p>
@@ -49,23 +49,23 @@ export default function SettingsPage() {
         </div>
 
         {/* Change password */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow p-6 fade-in fade-in-3">
+        <div className="bg-white dark:bg-neutral-900 rounded-xl shadow p-6 fade-in fade-in-3">
           <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Change Password</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="form-label">Current Password</label>
               <input name="currentPassword" type="password" required
-                className="w-full border border-slate-200 dark:border-slate-600 px-4 py-2.5 rounded-lg bg-white dark:bg-slate-700 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300" />
+                className="w-full border border-slate-200 dark:border-neutral-800 px-4 py-2.5 rounded-lg bg-white dark:bg-neutral-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300" />
             </div>
             <div>
               <label className="form-label">New Password</label>
               <input name="newPassword" type="password" required minLength={6}
-                className="w-full border border-slate-200 dark:border-slate-600 px-4 py-2.5 rounded-lg bg-white dark:bg-slate-700 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300" />
+                className="w-full border border-slate-200 dark:border-neutral-800 px-4 py-2.5 rounded-lg bg-white dark:bg-neutral-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300" />
             </div>
             <div>
               <label className="form-label">Confirm New Password</label>
               <input name="confirm" type="password" required
-                className="w-full border border-slate-200 dark:border-slate-600 px-4 py-2.5 rounded-lg bg-white dark:bg-slate-700 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300" />
+                className="w-full border border-slate-200 dark:border-neutral-800 px-4 py-2.5 rounded-lg bg-white dark:bg-neutral-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300" />
             </div>
             <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-50">
               {loading ? "Updating..." : "Update Password"}
@@ -76,3 +76,5 @@ export default function SettingsPage() {
     </div>
   );
 }
+
+

@@ -18,7 +18,7 @@ export default function AuditPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-16 px-4">
+    <div className="min-h-screen bg-slate-50 dark:bg-black py-16 px-4">
       <div className="mx-auto max-w-3xl">
 
         <div className="flex items-center justify-between mb-8 fade-in fade-in-1">
@@ -31,13 +31,13 @@ export default function AuditPage() {
           </button>
         </div>
 
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow fade-in fade-in-2">
+        <div className="bg-white dark:bg-neutral-900 rounded-xl shadow fade-in fade-in-2">
           {loading ? (
             <div className="p-6 space-y-3">
               {[1,2,3,4,5].map((i) => (
                 <div key={i} className="flex justify-between">
-                  <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded animate-pulse w-2/3" />
-                  <div className="h-4 bg-slate-100 dark:bg-slate-700 rounded animate-pulse w-1/5" />
+                  <div className="h-4 bg-slate-200 dark:bg-neutral-900 rounded animate-pulse w-2/3" />
+                  <div className="h-4 bg-slate-100 dark:bg-neutral-900 rounded animate-pulse w-1/5" />
                 </div>
               ))}
             </div>
@@ -48,7 +48,7 @@ export default function AuditPage() {
           ) : (
             <div className="divide-y dark:divide-slate-700">
               {log.map((item, i) => (
-                <div key={i} className="flex items-start justify-between gap-4 px-6 py-4 hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer"
+                <div key={i} className="flex items-start justify-between gap-4 px-6 py-4 hover:bg-slate-50 dark:hover:bg-neutral-900 transition cursor-pointer"
                   onClick={() => router.push(`/records/${item.id}`)}>
                   <div className="flex items-start gap-3">
                     <div className="mt-0.5 w-2 h-2 rounded-full bg-slate-900 dark:bg-white shrink-0 mt-2" />
@@ -70,3 +70,5 @@ export default function AuditPage() {
     </div>
   );
 }
+
+

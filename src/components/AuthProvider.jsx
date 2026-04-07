@@ -75,7 +75,7 @@ export default function AuthProvider({ children }) {
       {/* Session timeout warning */}
       {showWarning && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 w-full max-w-sm mx-4 space-y-4 animate-slideUp">
+          <div className="bg-white dark:bg-neutral-900 rounded-2xl shadow-xl p-6 w-full max-w-sm mx-4 space-y-4 animate-slideUp">
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Session Expiring</h3>
             <p className="text-slate-500 dark:text-slate-400 text-sm">
               You'll be logged out in <span className="font-bold text-slate-900 dark:text-white">{countdown}s</span> due to inactivity.
@@ -90,3 +90,5 @@ export default function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
+
+

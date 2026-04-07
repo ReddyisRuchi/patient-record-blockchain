@@ -61,14 +61,14 @@ export default function VerifyPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-16 px-4">
+    <div className="min-h-screen bg-slate-50 dark:bg-black py-16 px-4">
       <div className="mx-auto max-w-2xl">
 
         <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center">
           Verify Record
         </h1>
 
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow space-y-5">
+        <div className="bg-white dark:bg-neutral-900 p-6 rounded-xl shadow space-y-5">
 
           {/* Patient */}
           <div>
@@ -76,7 +76,7 @@ export default function VerifyPage() {
             <select
               value={selectedPatient}
               onChange={(e) => setSelectedPatient(e.target.value)}
-              className="w-full p-3 border border-slate-200 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
+              className="w-full p-3 border border-slate-200 dark:border-neutral-800 rounded-md bg-white dark:bg-neutral-900 text-slate-900 dark:text-slate-100"
             >
               <option value="">-- Choose Patient --</option>
               {patients.map((p) => (
@@ -93,7 +93,7 @@ export default function VerifyPage() {
                 <select
                   value={selectedRecord}
                   onChange={(e) => setSelectedRecord(e.target.value)}
-                  className="w-full p-3 border border-slate-200 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
+                  className="w-full p-3 border border-slate-200 dark:border-neutral-800 rounded-md bg-white dark:bg-neutral-900 text-slate-900 dark:text-slate-100"
                 >
                   <option value="">-- Choose Record --</option>
                   {records.map((r) => (
@@ -116,7 +116,7 @@ export default function VerifyPage() {
           </button>
 
           {result && (
-            <div className="mt-4 p-4 border border-slate-200 dark:border-slate-600 rounded-lg text-center">
+            <div className="mt-4 p-4 border border-slate-200 dark:border-neutral-800 rounded-lg text-center">
               <p className="text-slate-900 dark:text-white font-semibold">Record Verified</p>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Integrity confirmed on-chain</p>
             </div>
@@ -126,3 +126,4 @@ export default function VerifyPage() {
     </div>
   );
 }
+

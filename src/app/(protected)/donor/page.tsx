@@ -17,10 +17,10 @@ export default function DonorPage() {
   }
 
   const inputStyle =
-    "w-full px-4 py-2.5 border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 dark:text-slate-100 focus:ring-2 focus:ring-slate-300 focus:border-slate-500 focus:outline-none transition";
+    "w-full px-4 py-2.5 border border-slate-200 dark:border-neutral-800 rounded-lg bg-white dark:bg-neutral-900 dark:text-slate-100 focus:ring-2 focus:ring-slate-300 focus:border-slate-500 focus:outline-none transition";
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-16 px-4">
+    <div className="min-h-screen bg-slate-50 dark:bg-black py-16 px-4">
       <div className="mx-auto w-full max-w-2xl">
 
         <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center">
@@ -59,3 +59,4 @@ export default function DonorPage() {
     </div>
   );
 }
+

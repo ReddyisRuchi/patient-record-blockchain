@@ -20,7 +20,7 @@ export default function AboutPage() {
     <>
       <Navbar />
 
-      <main className="min-h-screen bg-slate-50 dark:bg-slate-900">
+      <main className="min-h-screen bg-slate-50 dark:bg-black">
 
         {/* Hero */}
         <section className="py-24 px-4 text-center fade-in fade-in-1">
@@ -38,7 +38,7 @@ export default function AboutPage() {
 
         {/* Divider */}
         <div className="container-max">
-          <hr className="border-slate-200 dark:border-slate-700" />
+          <hr className="border-slate-200 dark:border-neutral-800" />
         </div>
 
         {/* Team */}
@@ -78,3 +78,5 @@ export default function AboutPage() {
     </>
   );
 }
+
+

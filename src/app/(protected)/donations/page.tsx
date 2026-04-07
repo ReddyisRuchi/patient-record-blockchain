@@ -9,7 +9,7 @@ const statusColors: Record<string, string> = {
   assigned:  "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300",
 };
 
-const inputCls = "w-full border border-slate-200 dark:border-slate-600 px-4 py-2.5 rounded-lg bg-white dark:bg-slate-700 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300 transition";
+const inputCls = "w-full border border-slate-200 dark:border-neutral-800 px-4 py-2.5 rounded-lg bg-white dark:bg-neutral-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300 transition";
 
 function isExpiringSoon(expiryDate: string | null) {
   if (!expiryDate) return false;
@@ -79,7 +79,7 @@ export default function DonationsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-16 px-4">
+    <div className="min-h-screen bg-slate-50 dark:bg-black py-16 px-4">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
       <div className="mx-auto max-w-5xl">
@@ -91,7 +91,7 @@ export default function DonationsPage() {
               <select
                 value={filterBlood}
                 onChange={(e) => setFilterBlood(e.target.value)}
-                className="border border-slate-200 dark:border-slate-600 px-3 py-2 rounded-lg bg-white dark:bg-slate-700 dark:text-slate-100 text-sm"
+                className="border border-slate-200 dark:border-neutral-800 px-3 py-2 rounded-lg bg-white dark:bg-neutral-900 dark:text-slate-100 text-sm"
               >
                 <option value="">All Blood Groups</option>
                 {bloodGroups.map((b) => <option key={b}>{b}</option>)}
@@ -102,7 +102,7 @@ export default function DonationsPage() {
         </div>
 
         {/* Table */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow overflow-hidden fade-in fade-in-2">
+        <div className="bg-white dark:bg-neutral-900 rounded-xl shadow overflow-hidden fade-in fade-in-2">
           {donations.length === 0 ? (            <div className="p-16 text-center">
               <svg className="mx-auto mb-4 text-slate-300 dark:text-slate-600" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
@@ -113,7 +113,7 @@ export default function DonationsPage() {
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
                 <thead>
-                  <tr className="text-left border-b dark:border-slate-700 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  <tr className="text-left border-b dark:border-neutral-800 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     <th className="px-4 py-3">ID</th>
                     <th className="px-4 py-3">Type</th>
                     <th className="px-4 py-3">Blood Group</th>
@@ -129,7 +129,7 @@ export default function DonationsPage() {
                     const expiring = isExpiringSoon(d.expiryDate);
                     const expired  = isExpired(d.expiryDate);
                     return (
-                    <tr key={d.id} className={`border-b dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition text-sm ${expired ? "opacity-60" : ""}`}>
+                    <tr key={d.id} className={`border-b dark:border-neutral-800 hover:bg-slate-50 dark:hover:bg-neutral-900 transition text-sm ${expired ? "opacity-60" : ""}`}>
                       <td className="px-4 py-3 text-slate-500 dark:text-slate-400">#{d.id}</td>
                       <td className="px-4 py-3 font-medium">{d.type}</td>
                       <td className="px-4 py-3">{d.bloodGroup || "—"}</td>
@@ -170,7 +170,7 @@ export default function DonationsPage() {
       {/* Add Modal */}
       {showAdd && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowAdd(false)}>
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 w-full max-w-md mx-4 animate-slideUp space-y-4" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white dark:bg-neutral-900 rounded-2xl shadow-xl p-6 w-full max-w-md mx-4 animate-slideUp space-y-4" onClick={(e) => e.stopPropagation()}>
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Add Donation</h3>
             <div><label className="form-label">Type *</label><input value={type} onChange={(e) => setType(e.target.value)} placeholder="e.g. Blood, Organ" className={inputCls} /></div>
             <div><label className="form-label">Blood Group</label><input value={bloodGroup} onChange={(e) => setBloodGroup(e.target.value)} placeholder="e.g. A+" className={inputCls} /></div>
@@ -189,7 +189,7 @@ export default function DonationsPage() {
       {/* Assign Modal */}
       {showAssign && selectedDonation && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowAssign(false)}>
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 w-full max-w-sm mx-4 animate-slideUp space-y-4" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white dark:bg-neutral-900 rounded-2xl shadow-xl p-6 w-full max-w-sm mx-4 animate-slideUp space-y-4" onClick={(e) => e.stopPropagation()}>
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Assign Donation #{selectedDonation.id}</h3>
             <div>
               <label className="form-label">Select Patient</label>
@@ -209,7 +209,7 @@ export default function DonationsPage() {
       {/* Details Modal */}
       {showDetails && selectedDonation && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setShowDetails(false)}>
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 w-full max-w-sm mx-4 animate-slideUp space-y-3" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white dark:bg-neutral-900 rounded-2xl shadow-xl p-6 w-full max-w-sm mx-4 animate-slideUp space-y-3" onClick={(e) => e.stopPropagation()}>
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">Donation #{selectedDonation.id}</h3>
             {[
               ["Type", selectedDonation.type],
@@ -228,3 +228,5 @@ export default function DonationsPage() {
     </div>
   );
 }
+
+

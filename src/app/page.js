@@ -60,7 +60,7 @@ function FeatureStrip() {
   }, []);
 
   return (
-    <section className="bg-white dark:bg-slate-800">
+    <section className="bg-white dark:bg-black">
       <div className="container-max">
         <div className="grid md:grid-cols-3">
           {features.map((f, i) => (
