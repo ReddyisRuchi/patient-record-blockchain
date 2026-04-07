@@ -9,8 +9,14 @@ export async function getContract() {
     return contractInstance;
   }
 
-  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:8545");
-  const signer = await provider.getSigner(0);
+  const provider = new ethers.JsonRpcProvider(
+    process.env.SEPOLIA_RPC_URL
+  );
+
+  const signer = new ethers.Wallet(
+    process.env.PRIVATE_KEY,
+    provider
+  );
 
   const artifactPath = path.join(
     process.cwd(),

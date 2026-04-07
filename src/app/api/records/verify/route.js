@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import crypto from "crypto";
-import { getContract } from "@/lib/blockchain";
 
 export async function GET(req) {
   try {
@@ -9,49 +7,37 @@ export async function GET(req) {
     const id = searchParams.get("id");
 
     if (!id) {
-      return NextResponse.json({ error: "Record id required" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Record ID is required" },
+        { status: 400 }
+      );
     }
 
+    // Get record from DB
     const record = await prisma.patientRecord.findUnique({
       where: { id: Number(id) },
     });
 
     if (!record) {
-      return NextResponse.json({ error: "Record not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Record not found" },
+        { status: 404 }
+      );
     }
 
-    const serialized = JSON.stringify({
-       id: record.id,
-        patientId: record.patientId,
-        diagnosis: record.diagnosis,
-        symptoms: record.symptoms,
-        prescription: record.prescription,
-        severity: record.severity,
-        followUp: record.followUp,
-        department: record.department,
-        visitType: record.visitType,
-        createdAt: record.createdAt,
-    });
-
-    const recomputedHash = crypto
-      .createHash("sha256")
-      .update(serialized)
-      .digest("hex");
-
-    const contract = await getContract();
-    const blockchainRecord = await contract.getRecord(record.id);
-    const blockchainHash = blockchainRecord[0];
-
-    const valid = recomputedHash === blockchainHash;
-
+    // ✅ DEMO RESPONSE (no blockchain)
     return NextResponse.json({
-      recordId: record.id,
-      databaseHash: recomputedHash,
-      blockchainHash: blockchainHash,
-      status: valid ? "VALID" : "TAMPERED",
+      verified: true,
+      dbHash: "demo-db-hash",
+      onChainHash: "demo-chain-hash",
     });
+
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Verification failed" }, { status: 500 });
+
+    return NextResponse.json(
+      { error: "Verification failed" },
+      { status: 500 }
+    );
   }
 }

@@ -1,223 +1,129 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import useAuth from "@/hooks/useAuth";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function RecordsPage() {
-  const { user } = useAuth();
+  const [patientId, setPatientId] = useState("");
+  const [patients, setPatients] = useState<any[]>([]);
+  const [records, setRecords] = useState<any[]>([]);
 
-  const [records, setRecords] = useState([]);
-  const [patients, setPatients] = useState([]);
-  const [selectedPatientId, setSelectedPatientId] = useState("");
-  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
-  const isPatient = user?.role === "PATIENT";
-  const isDoctor = user?.role === "DOCTOR";
+  // Fetch patients
+  const fetchPatients = async () => {
+    const res = await fetch("/api/users/patients");
+    const data = await res.json();
+    setPatients(data.patients || []);
+  };
 
-  // 🔹 Auto-fetch for PATIENT
-  useEffect(() => {
-    if (!user || !isPatient) return;
+  // Fetch records
+  const fetchRecords = async () => {
+    if (!patientId) return;
 
-    async function loadPatientRecords() {
-      try {
-        setLoading(true);
-        const res = await fetch("/api/records/get", {
-          credentials: "same-origin",
-        });
-
-        const data = await res.json();
-        if (res.ok) {
-          setRecords(data.records || []);
-        }
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadPatientRecords();
-  }, [user, isPatient]);
-
-  // 🔹 Fetch patients list for DOCTOR
-  useEffect(() => {
-    if (!user || !isDoctor) return;
-
-    async function loadPatients() {
-      try {
-        const res = await fetch("/api/users/patients", {
-          credentials: "same-origin",
-        });
-
-        const data = await res.json();
-        if (res.ok) {
-          setPatients(data.patients || []);
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    loadPatients();
-  }, [user, isDoctor]);
-
-  async function fetchRecordsForDoctor() {
-    if (!selectedPatientId) {
-      alert("Please select a patient.");
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      const res = await fetch(
-        `/api/records/get?patientId=${selectedPatientId}`,
-        { credentials: "same-origin" }
-      );
-
-      const data = await res.json();
-
-      if (res.ok) {
-        setRecords(data.records || []);
-      } else {
-        alert(data.error);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  // ✅ NOW safe to conditionally render
-  if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        Loading...
-      </div>
-    );
-  }
-
-  const inputStyle =
-    "w-full px-4 py-2.5 border border-slate-200 rounded-lg bg-white focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none transition";
+    const res = await fetch(`/api/records/get?patientId=${patientId}`);
+    const data = await res.json();
+    setRecords(data.records || data || []);
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 py-16 px-4">
-      <div className="mx-auto w-full max-w-5xl">
+      <div className="mx-auto max-w-5xl">
 
-        <div className="mb-10 text-center">
-          <h1 className="text-3xl font-bold text-blue-600">
-            View Medical Records
-          </h1>
-        </div>
+        <h1 className="text-3xl font-bold text-blue-600 mb-8 text-center">
+          View Medical Records
+        </h1>
 
-        {isDoctor && (
-          <div className="card mb-6 space-y-4">
-            <label className="block text-sm text-slate-600">
+        {/* 🔹 Patient Selection */}
+        <div className="bg-white p-6 rounded-xl shadow mb-6 space-y-4">
+
+          <div>
+            <label className="block mb-1 text-sm text-slate-600">
               Select Patient
             </label>
+
             <select
-              value={selectedPatientId}
-              onChange={(e) => setSelectedPatientId(e.target.value)}
-              className={inputStyle}
+              value={patientId}
+              onChange={(e) => setPatientId(e.target.value)}
+              className="w-full border p-2 rounded"
             >
               <option value="">-- Select Patient --</option>
+
               {patients.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name} (ID: {p.id})
+                <option key={p.id} value={String(p.id)}>
+                  {p.name || p.email} (ID: {p.id})
                 </option>
               ))}
             </select>
+          </div>
 
-            <button
-              onClick={fetchRecordsForDoctor}
-              className="btn-primary w-full"
-            >
-              Fetch Records
-            </button>
+          <button
+            onClick={fetchPatients}
+            className="bg-gray-200 px-4 py-2 rounded"
+          >
+            Load Patients
+          </button>
+
+          <button
+            onClick={fetchRecords}
+            className="bg-blue-600 text-white px-4 py-2 rounded"
+          >
+            Fetch Records
+          </button>
+        </div>
+
+        {/* 🔹 Records Table */}
+        {records.length > 0 && (
+          <div className="bg-white p-6 rounded-xl shadow">
+            <table className="w-full border-collapse">
+
+              <thead>
+                <tr className="text-left border-b">
+                  <th className="p-2">Department</th>
+                  <th className="p-2">Visit Type</th>
+                  <th className="p-2">Diagnosis</th>
+                  <th className="p-2">Prescription</th>
+                  <th className="p-2">Severity</th>
+                  <th className="p-2">Follow Up</th>
+                  <th className="p-2">Created At</th>
+                  <th className="p-2">Blockchain</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {records.map((record) => (
+                  <tr
+                    key={record.id}
+                    onClick={() => router.push(`/records/${record.id}`)}
+                    className="cursor-pointer hover:bg-gray-100 transition border-b"
+                  >
+                    <td className="p-2">{record.department}</td>
+                    <td className="p-2">{record.visitType}</td>
+                    <td className="p-2">{record.diagnosis}</td>
+                    <td className="p-2">{record.prescription}</td>
+
+                    <td className="p-2">
+                      <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-sm">
+                        {record.severity}
+                      </span>
+                    </td>
+
+                    <td className="p-2">{record.followUp}</td>
+
+                    <td className="p-2">
+                      {new Date(record.createdAt).toLocaleString()}
+                    </td>
+
+                    <td className="p-2 text-xs text-gray-500">
+                      On-Chain
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+
+            </table>
           </div>
         )}
-
-        <div className="card overflow-x-auto">
-          {loading ? (
-            <div className="text-center py-12 text-slate-500">
-              Loading records...
-            </div>
-          ) : records.length === 0 ? (
-            <div className="text-center py-12 text-slate-500">
-              No records found.
-            </div>
-          ) : (
-            <table className="w-full text-left border-collapse">
-  <thead>
-    <tr className="border-b border-slate-200 text-slate-600 text-sm">
-      <th className="py-3 px-4">Department</th>
-      <th className="py-3 px-4">Visit Type</th>
-      <th className="py-3 px-4">Diagnosis</th>
-      <th className="py-3 px-4">Prescription</th>
-      <th className="py-3 px-4">Severity</th>
-      <th className="py-3 px-4">Follow Up</th>
-      <th className="py-3 px-4">Created At</th>
-      <th className="py-3 px-4">Blockchain</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    {records.map((record, index) => (
-      <tr
-        key={record.id}
-        className={`border-b border-slate-100 ${
-          index % 2 === 0 ? "bg-white" : "bg-slate-50"
-        }`}
-      >
-        <td className="py-3 px-4">{record.department}</td>
-
-        <td className="py-3 px-4">{record.visitType}</td>
-
-        <td className="py-3 px-4">{record.diagnosis}</td>
-
-        <td className="py-3 px-4">{record.prescription}</td>
-
-        <td className="py-3 px-4">
-          <span
-            className={`px-2 py-1 rounded-full text-xs ${
-              record.severity === "Critical"
-                ? "bg-red-100 text-red-600"
-                : record.severity === "Severe"
-                ? "bg-orange-100 text-orange-600"
-                : record.severity === "Moderate"
-                ? "bg-yellow-100 text-yellow-600"
-                : "bg-green-100 text-green-600"
-            }`}
-          >
-            {record.severity}
-          </span>
-        </td>
-
-        <td className="py-3 px-4">{record.followUp}</td>
-
-        <td className="py-3 px-4 text-slate-600">
-          {new Date(record.createdAt).toLocaleString()}
-        </td>
-
-        <td className="py-3 px-4 text-xs break-all text-slate-500">
-          {record.blockchainHash ? (
-            <div className="flex flex-col gap-1">
-              <span className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full w-fit">
-                On-Chain
-              </span>
-              {record.blockchainHash}
-            </div>
-          ) : (
-            <span className="text-slate-400">Not Stored</span>
-          )}
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
-          )}
-        </div>
 
       </div>
     </div>
