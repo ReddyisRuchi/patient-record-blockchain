@@ -1,10 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import useAuth from "@/hooks/useAuth";
 
 export default function DashboardPage() {
   const { user } = useAuth();
+  const [recordCount, setRecordCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    fetch("/api/records/get" + (user.role !== "PATIENT" ? "" : ""))
+      .then((r) => r.json())
+      .then((d) => setRecordCount((d.records || d || []).length))
+      .catch(() => {});
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-16 px-4">
@@ -23,9 +33,12 @@ export default function DashboardPage() {
 
           <div className="card flex flex-col text-center w-full max-w-xs fade-in fade-in-2">
             <h3 className="text-xl font-semibold mb-3 text-slate-900 dark:text-white">View Records</h3>
-            <p className="text-slate-500 dark:text-slate-400 mb-6 text-sm flex-1">
+            <p className="text-slate-500 dark:text-slate-400 mb-2 text-sm flex-1">
               Access and review previously submitted patient records.
             </p>
+            {recordCount !== null && (
+              <p className="text-xs text-slate-400 dark:text-slate-500 mb-4">{recordCount} record{recordCount !== 1 ? "s" : ""}</p>
+            )}
             <Link href="/records" className="btn-primary w-full">Open</Link>
           </div>
 

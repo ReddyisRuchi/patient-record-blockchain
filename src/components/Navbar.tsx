@@ -1,15 +1,32 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import api from "@/lib/api";
 import useAuth from "@/hooks/useAuth";
 import { useTheme } from "@/components/ThemeProvider";
 
 export default function Navbar() {
-  const router = useRouter();
+  const router   = useRouter();
+  const pathname = usePathname();
   const { user, loading, refreshAuth } = useAuth();
   const { dark, toggle } = useTheme();
+
+  const navLink = (href: string, label: string) => {
+    const active = pathname === href || pathname.startsWith(href + "/");
+    return (
+      <Link
+        href={href}
+        className={`relative text-sm transition-colors pb-0.5
+          ${active
+            ? "text-slate-900 dark:text-white font-semibold after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-slate-900 after:dark:bg-white after:rounded-full"
+            : "text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white"
+          }`}
+      >
+        {label}
+      </Link>
+    );
+  };
 
   const handleLogout = async () => {
     try {
@@ -33,27 +50,13 @@ export default function Navbar() {
 
         <div className="hidden md:flex gap-4 items-center">
 
-          {!isLoggedIn && (
-            <Link href="/" className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">
-              Home
-            </Link>
-          )}
+          {!isLoggedIn && navLink("/", "Home")}
 
           {isLoggedIn && (
             <>
-              <Link href="/dashboard" className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">
-                Dashboard
-              </Link>
-
-              <Link href="/records" className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">
-                Records
-              </Link>
-
-              {user?.role === "HEALTHCARE_ADMIN" && (
-                <Link href="/doctor_submit" className="text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors">
-                  Create Record
-                </Link>
-              )}
+              {navLink("/dashboard", "Dashboard")}
+              {navLink("/records", "Records")}
+              {user?.role === "HEALTHCARE_ADMIN" && navLink("/doctor_submit", "Create Record")}
             </>
           )}
         </div>
