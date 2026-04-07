@@ -69,7 +69,7 @@ export default function Navbar() {
         <button
           onClick={toggle}
           aria-label="Toggle dark mode"
-          className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+          className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-neutral-900 transition-colors"
         >
           {dark ? (
             // Sun icon
@@ -118,3 +118,5 @@ export default function Navbar() {
   </nav>
 );
 }
+
+

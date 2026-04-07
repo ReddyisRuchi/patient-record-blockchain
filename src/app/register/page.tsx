@@ -48,10 +48,10 @@ export default function RegisterPage() {
   }
 
   const inputStyle =
-    "w-full px-4 py-2.5 border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 dark:text-slate-100 focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none transition";
+    "w-full px-4 py-2.5 border border-slate-200 dark:border-neutral-800 rounded-lg bg-white dark:bg-neutral-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none transition";
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+    <div className="min-h-screen bg-slate-50 dark:bg-black">
       <Navbar />
 
       <div className="flex items-center justify-center py-16 px-4">
@@ -144,3 +144,4 @@ export default function RegisterPage() {
     </div>
   );
 }
+

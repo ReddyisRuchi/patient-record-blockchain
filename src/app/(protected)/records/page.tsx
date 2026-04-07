@@ -14,10 +14,10 @@ const severityColors: Record<string, string> = {
 
 function SkeletonRow() {
   return (
-    <tr className="border-b dark:border-slate-700">
+    <tr className="border-b dark:border-neutral-800">
       {Array.from({ length: 8 }).map((_, i) => (
         <td key={i} className="p-2">
-          <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded animate-pulse w-full" />
+          <div className="h-4 bg-slate-200 dark:bg-neutral-900 rounded animate-pulse w-full" />
         </td>
       ))}
     </tr>
@@ -82,7 +82,7 @@ export default function RecordsPage() {
   const departments = [...new Set(records.map((r) => r.department).filter(Boolean))];
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-16 px-4">
+    <div className="min-h-screen bg-slate-50 dark:bg-black py-16 px-4">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
 
       <div className="mx-auto max-w-6xl">
@@ -92,7 +92,7 @@ export default function RecordsPage() {
 
         {/* Patient selector — admins only */}
         {!isPatient && (
-          <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow mb-6 fade-in fade-in-2">
+          <div className="bg-white dark:bg-neutral-900 p-6 rounded-xl shadow mb-6 fade-in fade-in-2">
             <div className="flex items-center justify-between mb-2">
               <label className="form-label">Select Patient</label>
               {patientId && (
@@ -104,7 +104,7 @@ export default function RecordsPage() {
             <select
               value={patientId}
               onChange={(e) => setPatientId(e.target.value)}
-              className="w-full border dark:border-slate-600 p-2.5 rounded-lg bg-white dark:bg-slate-700 dark:text-slate-100"
+              className="w-full border dark:border-neutral-800 p-2.5 rounded-lg bg-white dark:bg-neutral-900 dark:text-slate-100"
             >
               <option value="">-- Select Patient --</option>
               {patients.map((p) => (
@@ -118,18 +118,18 @@ export default function RecordsPage() {
 
         {/* Filters */}
         {fetched && records.length > 0 && (
-          <div className="bg-white dark:bg-slate-800 p-4 rounded-xl shadow mb-6 flex flex-wrap gap-3 fade-in fade-in-2">
+          <div className="bg-white dark:bg-neutral-900 p-4 rounded-xl shadow mb-6 flex flex-wrap gap-3 fade-in fade-in-2">
             <input
               type="text"
               placeholder="Search diagnosis, department..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="flex-1 min-w-[180px] border border-slate-200 dark:border-slate-600 px-3 py-2 rounded-lg bg-white dark:bg-slate-700 dark:text-slate-100 text-sm"
+              className="flex-1 min-w-[180px] border border-slate-200 dark:border-neutral-800 px-3 py-2 rounded-lg bg-white dark:bg-neutral-900 dark:text-slate-100 text-sm"
             />
             <select
               value={filterSeverity}
               onChange={(e) => setFilterSeverity(e.target.value)}
-              className="border border-slate-200 dark:border-slate-600 px-3 py-2 rounded-lg bg-white dark:bg-slate-700 dark:text-slate-100 text-sm"
+              className="border border-slate-200 dark:border-neutral-800 px-3 py-2 rounded-lg bg-white dark:bg-neutral-900 dark:text-slate-100 text-sm"
             >
               <option value="">All Severities</option>
               {["Mild","Moderate","Severe","Critical"].map((s) => <option key={s}>{s}</option>)}
@@ -137,7 +137,7 @@ export default function RecordsPage() {
             <select
               value={filterDept}
               onChange={(e) => setFilterDept(e.target.value)}
-              className="border border-slate-200 dark:border-slate-600 px-3 py-2 rounded-lg bg-white dark:bg-slate-700 dark:text-slate-100 text-sm"
+              className="border border-slate-200 dark:border-neutral-800 px-3 py-2 rounded-lg bg-white dark:bg-neutral-900 dark:text-slate-100 text-sm"
             >
               <option value="">All Departments</option>
               {departments.map((d) => <option key={d}>{d}</option>)}
@@ -147,7 +147,7 @@ export default function RecordsPage() {
 
         {/* Skeleton */}
         {loading && (
-          <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow">
+          <div className="bg-white dark:bg-neutral-900 p-6 rounded-xl shadow">
             <table className="w-full border-collapse">
               <tbody>{Array.from({ length: 4 }).map((_, i) => <SkeletonRow key={i} />)}</tbody>
             </table>
@@ -156,7 +156,7 @@ export default function RecordsPage() {
 
         {/* Empty state */}
         {!loading && fetched && filtered.length === 0 && (
-          <div className="bg-white dark:bg-slate-800 p-16 rounded-xl shadow text-center fade-in fade-in-2">
+          <div className="bg-white dark:bg-neutral-900 p-16 rounded-xl shadow text-center fade-in fade-in-2">
             <svg className="mx-auto mb-4 text-slate-300 dark:text-slate-600" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
               <polyline points="14 2 14 8 20 8"/>
@@ -169,14 +169,14 @@ export default function RecordsPage() {
 
         {/* Table */}
         {!loading && filtered.length > 0 && (
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow overflow-hidden fade-in fade-in-3">
-            <div className="px-6 py-4 border-b dark:border-slate-700">
+          <div className="bg-white dark:bg-neutral-900 rounded-xl shadow overflow-hidden fade-in fade-in-3">
+            <div className="px-6 py-4 border-b dark:border-neutral-800">
               <span className="text-sm text-slate-500 dark:text-slate-400">{filtered.length} record{filtered.length !== 1 ? "s" : ""}</span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
                 <thead>
-                  <tr className="text-left border-b dark:border-slate-700 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  <tr className="text-left border-b dark:border-neutral-800 text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400">
                     <th className="px-4 py-3">Department</th>
                     <th className="px-4 py-3">Visit Type</th>
                     <th className="px-4 py-3">Diagnosis</th>
@@ -192,7 +192,7 @@ export default function RecordsPage() {
                     <tr
                       key={record.id}
                       onClick={() => router.push(`/records/${record.id}`)}
-                      className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700 transition border-b dark:border-slate-700 text-sm"
+                      className="cursor-pointer hover:bg-slate-50 dark:hover:bg-neutral-900 transition border-b dark:border-neutral-800 text-sm"
                     >
                       <td className="px-4 py-3">{record.department}</td>
                       <td className="px-4 py-3">{record.visitType}</td>
@@ -217,3 +217,5 @@ export default function RecordsPage() {
     </div>
   );
 }
+
+

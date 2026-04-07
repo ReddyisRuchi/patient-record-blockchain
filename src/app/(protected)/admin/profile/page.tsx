@@ -30,24 +30,24 @@ function ChangePasswordSection() {
   }
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow p-6 fade-in fade-in-4">
+    <div className="bg-white dark:bg-neutral-900 rounded-xl shadow p-6 fade-in fade-in-4">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
       <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Change Password</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="form-label">Current Password</label>
           <input name="currentPassword" type="password" required
-            className="w-full border border-slate-200 dark:border-slate-600 px-4 py-2.5 rounded-lg bg-white dark:bg-slate-700 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300" />
+            className="w-full border border-slate-200 dark:border-neutral-800 px-4 py-2.5 rounded-lg bg-white dark:bg-neutral-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300" />
         </div>
         <div>
           <label className="form-label">New Password</label>
           <input name="newPassword" type="password" required minLength={6}
-            className="w-full border border-slate-200 dark:border-slate-600 px-4 py-2.5 rounded-lg bg-white dark:bg-slate-700 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300" />
+            className="w-full border border-slate-200 dark:border-neutral-800 px-4 py-2.5 rounded-lg bg-white dark:bg-neutral-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300" />
         </div>
         <div>
           <label className="form-label">Confirm New Password</label>
           <input name="confirm" type="password" required
-            className="w-full border border-slate-200 dark:border-slate-600 px-4 py-2.5 rounded-lg bg-white dark:bg-slate-700 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300" />
+            className="w-full border border-slate-200 dark:border-neutral-800 px-4 py-2.5 rounded-lg bg-white dark:bg-neutral-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-300" />
         </div>
         <button type="submit" disabled={loading} className="btn-primary disabled:opacity-50">
           {loading ? "Updating..." : "Update Password"}
@@ -75,7 +75,7 @@ export default function AdminProfilePage() {
   const initials = user.name?.split(" ").map((n: string) => n[0]).join("").toUpperCase();
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-10 px-4 text-slate-900 dark:text-slate-100">
+    <div className="min-h-screen bg-slate-50 dark:bg-black py-10 px-4 text-slate-900 dark:text-slate-100">
       <div className="max-w-3xl mx-auto space-y-6">
 
         {/* Back */}
@@ -90,7 +90,7 @@ export default function AdminProfilePage() {
         </div>
 
         {/* Identity card */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow p-6 fade-in fade-in-2">
+        <div className="bg-white dark:bg-neutral-900 rounded-xl shadow p-6 fade-in fade-in-2">
           <div className="flex items-center gap-4 mb-6">
             <div className="w-16 h-16 rounded-full bg-slate-900 dark:bg-slate-100 flex items-center justify-center shrink-0">
               <span className="text-xl font-bold text-white dark:text-slate-900">{initials}</span>
@@ -98,7 +98,7 @@ export default function AdminProfilePage() {
             <div>
               <h2 className="text-xl font-semibold text-slate-900 dark:text-white">{user.name}</h2>
               <p className="text-sm text-slate-500 dark:text-slate-400">{user.email}</p>
-              <span className="inline-block mt-1 text-xs font-medium px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
+              <span className="inline-block mt-1 text-xs font-medium px-2 py-0.5 rounded bg-slate-100 dark:bg-neutral-900 text-slate-600 dark:text-slate-300">
                 Healthcare Admin
               </span>
             </div>
@@ -107,15 +107,15 @@ export default function AdminProfilePage() {
           {/* Stats row */}
           {stats && (
             <div className="grid grid-cols-3 gap-4">
-              <div className="bg-slate-50 dark:bg-slate-700 rounded-lg p-3 text-center">
+              <div className="bg-slate-50 dark:bg-neutral-900 rounded-lg p-3 text-center">
                 <p className="text-xs uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Records</p>
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">{stats.totalRecords}</p>
               </div>
-              <div className="bg-slate-50 dark:bg-slate-700 rounded-lg p-3 text-center">
+              <div className="bg-slate-50 dark:bg-neutral-900 rounded-lg p-3 text-center">
                 <p className="text-xs uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">Patients</p>
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">{stats.totalPatients}</p>
               </div>
-              <div className="bg-slate-50 dark:bg-slate-700 rounded-lg p-3 text-center">
+              <div className="bg-slate-50 dark:bg-neutral-900 rounded-lg p-3 text-center">
                 <p className="text-xs uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-1">This Month</p>
                 <p className="text-2xl font-bold text-slate-900 dark:text-white">{stats.thisMonth}</p>
               </div>
@@ -125,7 +125,7 @@ export default function AdminProfilePage() {
 
         {/* Recent activity */}
         {activity.length > 0 && (
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow p-6 fade-in fade-in-3">
+          <div className="bg-white dark:bg-neutral-900 rounded-xl shadow p-6 fade-in fade-in-3">
             <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">Recent Activity</h2>
             <div className="divide-y dark:divide-slate-700">
               {activity.map((item) => (
@@ -151,3 +151,6 @@ export default function AdminProfilePage() {
     </div>
   );
 }
+
+
+

@@ -90,10 +90,10 @@ export default function SubmitPage() {
   };
 
   const inputStyle =
-    "w-full px-4 py-2.5 border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 dark:text-slate-100 focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none transition";
+    "w-full px-4 py-2.5 border border-slate-200 dark:border-neutral-800 rounded-lg bg-white dark:bg-neutral-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none transition";
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-16 px-4">
+    <div className="min-h-screen bg-slate-50 dark:bg-black py-16 px-4">
       {toast && <Toast message={toast.message} type={toast.type} onClose={hide} />}
       <div className="mx-auto w-full max-w-2xl">
 
@@ -101,7 +101,7 @@ export default function SubmitPage() {
           Create Medical Record
         </h1>
 
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow">
+        <div className="bg-white dark:bg-neutral-900 p-6 rounded-xl shadow">
 
           {/* Auth Checks */}
           {!isLoggedIn && (
@@ -231,7 +231,7 @@ export default function SubmitPage() {
         </div>
 
         {createdRecord && (
-          <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow mt-6 fade-in fade-in-1">
+          <div className="bg-white dark:bg-neutral-900 p-6 rounded-xl shadow mt-6 fade-in fade-in-1">
             <h2 className="text-lg font-semibold mb-4 text-slate-900 dark:text-white">Record Created</h2>
             <p><strong>Patient ID:</strong> {createdRecord.patientId}</p>
             <p><strong>Diagnosis:</strong> {createdRecord.diagnosis}</p>
@@ -246,7 +246,7 @@ export default function SubmitPage() {
       {/* Confirmation Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 w-full max-w-sm mx-4 animate-slideUp space-y-4">
+          <div className="bg-white dark:bg-neutral-900 rounded-2xl shadow-xl p-6 w-full max-w-sm mx-4 animate-slideUp space-y-4">
             <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Confirm Submission</h3>
             <p className="text-slate-500 dark:text-slate-400 text-sm">
               Are you sure you want to save this medical record? This will be written to the blockchain.
@@ -261,3 +261,4 @@ export default function SubmitPage() {
     </div>
   );
 }
+

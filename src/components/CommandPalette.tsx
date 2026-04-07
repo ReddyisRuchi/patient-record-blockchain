@@ -60,20 +60,20 @@ export default function CommandPalette() {
   if (!open) return (
     <button
       onClick={() => setOpen(true)}
-      className="hidden md:flex items-center gap-2 text-xs text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 hover:border-slate-400 dark:hover:border-slate-500 transition-colors"
+      className="hidden md:flex items-center gap-2 text-xs text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-neutral-800 rounded-lg px-3 py-1.5 hover:border-slate-400 dark:hover:border-slate-500 transition-colors"
     >
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
       </svg>
       Search
-      <kbd className="ml-1 font-mono bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded text-[10px]">⌘K</kbd>
+      <kbd className="ml-1 font-mono bg-slate-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded text-[10px]">⌘K</kbd>
     </button>
   );
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-24 bg-black/50 backdrop-blur-sm" onClick={() => setOpen(false)}>
-      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden animate-slideUp" onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-center gap-3 px-4 py-3 border-b dark:border-slate-700">
+      <div className="bg-white dark:bg-neutral-900 rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden animate-slideUp" onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-center gap-3 px-4 py-3 border-b dark:border-neutral-800">
           <svg width="16" height="16" className="text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
           </svg>
@@ -85,7 +85,7 @@ export default function CommandPalette() {
             placeholder="Search pages..."
             className="flex-1 bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none text-sm"
           />
-          <kbd className="text-xs text-slate-400 font-mono bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded">Esc</kbd>
+          <kbd className="text-xs text-slate-400 font-mono bg-slate-100 dark:bg-neutral-900 px-1.5 py-0.5 rounded">Esc</kbd>
         </div>
         <div className="py-2 max-h-64 overflow-y-auto">
           {commands.length === 0 ? (
@@ -96,7 +96,7 @@ export default function CommandPalette() {
               onClick={() => navigate(cmd.href)}
               onMouseEnter={() => setActive(i)}
               className={`w-full text-left px-4 py-2.5 text-sm flex items-center gap-3 transition-colors
-                ${i === active ? "bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-white" : "text-slate-600 dark:text-slate-300"}`}
+                ${i === active ? "bg-slate-100 dark:bg-neutral-900 text-slate-900 dark:text-white" : "text-slate-600 dark:text-slate-300"}`}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="9 18 15 12 9 6"/>
@@ -109,3 +109,5 @@ export default function CommandPalette() {
     </div>
   );
 }
+
+
