@@ -9,7 +9,7 @@ export default function FeatureCard({ title, description }: Props) {
       <h3 className="text-xl font-semibold mb-3 text-blue-600">
         {title}
       </h3>
-      <p className="text-slate-600">
+      <p className="text-slate-600 dark:text-slate-400">
         {description}
       </p>
     </div>

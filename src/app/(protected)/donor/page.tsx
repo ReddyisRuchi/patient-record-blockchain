@@ -17,13 +17,13 @@ export default function DonorPage() {
   }
 
   const inputStyle =
-    "w-full px-4 py-2.5 border border-slate-200 rounded-lg bg-white focus:ring-2 focus:ring-emerald-200 focus:border-emerald-500 focus:outline-none transition";
+    "w-full px-4 py-2.5 border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 dark:text-slate-100 focus:ring-2 focus:ring-slate-300 focus:border-slate-500 focus:outline-none transition";
 
   return (
-    <div className="min-h-screen bg-slate-50 py-16 px-4">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 py-16 px-4">
       <div className="mx-auto w-full max-w-2xl">
 
-        <h1 className="text-3xl font-bold text-emerald-600 mb-8 text-center">
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center">
           Donor Registration
         </h1>
 
@@ -35,11 +35,8 @@ export default function DonorPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-6">
-
             <div>
-              <label className="block mb-1 text-sm text-slate-600">
-                Donation Type
-              </label>
+              <label className="form-label">Donation Type</label>
               <select
                 value={donationType}
                 onChange={(e) => setDonationType(e.target.value)}
@@ -52,14 +49,9 @@ export default function DonorPage() {
               </select>
             </div>
 
-            <button
-              type="submit"
-              disabled={!isLoggedIn}
-              className="btn-secondary w-full"
-            >
+            <button type="submit" disabled={!isLoggedIn} className="btn-primary w-full">
               Register as Donor
             </button>
-
           </form>
         </div>
 

@@ -24,8 +24,8 @@ export async function GET(request) {
     if (decoded.role === "PATIENT") {
       // Patient can ONLY see their own records
       patientId = decoded.id;
-    } else if (decoded.role === "DOCTOR") {
-      // Doctor must provide patientId
+    } else if (decoded.role === "HEALTHCARE_ADMIN") {
+      // Healthcare admin must provide patientId
       const paramId = searchParams.get("patientId");
       console.log("Decoded token:", decoded);
       if (!paramId) {

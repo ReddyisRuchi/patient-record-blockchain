@@ -48,16 +48,16 @@ export default function RegisterPage() {
   }
 
   const inputStyle =
-    "w-full px-4 py-2.5 border border-slate-200 rounded-lg bg-white focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none transition";
+    "w-full px-4 py-2.5 border border-slate-200 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 dark:text-slate-100 focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none transition";
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
       <Navbar />
 
       <div className="flex items-center justify-center py-16 px-4">
         <div className="w-full max-w-md card">
 
-          <h2 className="text-3xl font-bold text-blue-600 text-center mb-6">
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-white text-center mb-6">
             Create Account
           </h2>
 
@@ -120,7 +120,7 @@ export default function RegisterPage() {
                 className={inputStyle}
               >
                 <option value="PATIENT">Patient</option>
-                <option value="DOCTOR">Doctor</option>
+                <option value="HEALTHCARE_ADMIN">Healthcare Admin</option>
                 <option value="DONOR">Donor</option>
               </select>
             </div>

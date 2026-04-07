@@ -11,9 +11,9 @@ export default function Home() {
       <HeroSection />
 
       {/* Features Section */}
-      <section className="py-20 bg-slate-50">
+      <section className="py-20 bg-slate-50 dark:bg-slate-900">
         <div className="container-max text-center">
-          <h2 className="text-3xl font-bold text-blue-600 mb-12">
+          <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-12">
             Features
           </h2>
 
