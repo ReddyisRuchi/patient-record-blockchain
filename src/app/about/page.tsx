@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const team = [
   { name: "P. Phani Prasad",          role: "Project Guide"  },
@@ -28,7 +29,7 @@ export default function AboutPage() {
             BE 4th Year · Sem 8 · CSE A
           </p>
           <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4">
-            About This Project
+            About Us
           </h1>
           <p className="text-slate-500 dark:text-slate-400 max-w-xl mx-auto text-lg">
             A blockchain-based patient record management system built to ensure
@@ -74,7 +75,7 @@ export default function AboutPage() {
         </section>
 
       </main>
-
+    
     </>
   );
 }
