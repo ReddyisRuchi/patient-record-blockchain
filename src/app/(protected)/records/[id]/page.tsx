@@ -6,7 +6,8 @@ import { Toast, useToast } from "@/components/Toast";
 
 type RecordType = {
   id: number; diagnosis: string; symptoms: string; prescription: string;
-  department: string; visitType: string; severity: string; followUp: string; createdAt: string;
+  department: string; visitType: string; severity: string; followUp: string;
+  createdAt: string; blockchainHash?: string;
 };
 type EventType = { location: string; action: string; timestamp: number | string; };
 
@@ -111,15 +112,27 @@ export default function RecordDetailsPage() {
             <span>/</span>
             <span className="text-slate-900 dark:text-white font-medium">Record #{record.id}</span>
           </nav>
-          <button
-            onClick={() => router.back()}
-            className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
-            </svg>
-            Back
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => window.print()}
+              className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                <rect x="6" y="14" width="12" height="8"/>
+              </svg>
+              Print
+            </button>
+            <button
+              onClick={() => router.back()}
+              className="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+              </svg>
+              Back
+            </button>
+          </div>
         </div>
 
         {/* Medical Data */}
@@ -144,6 +157,27 @@ export default function RecordDetailsPage() {
             <p className="font-medium">Status: <span className="font-semibold">Valid</span></p>
           ) : (
             <p className="font-medium">Status: <span className="text-red-500 font-semibold">Tampered</span></p>
+          )}
+
+          {record.blockchainHash && (
+            <div className="mt-4 space-y-2">
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium uppercase tracking-wider">Blockchain Hash</p>
+              <p className="text-xs font-mono bg-slate-50 dark:bg-slate-700 px-3 py-2 rounded-lg break-all text-slate-700 dark:text-slate-300">
+                {record.blockchainHash}
+              </p>
+              <a
+                href={`https://sepolia.etherscan.io/search?q=${record.blockchainHash}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+              >
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                  <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+                </svg>
+                View on Etherscan
+              </a>
+            </div>
           )}
         </div>
 

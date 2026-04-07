@@ -9,6 +9,7 @@ export async function POST(req) {
       type,
       bloodGroup,
       currentLocation,
+      expiryDate,
     } = body;
 
     if (!type || !currentLocation) {
@@ -25,6 +26,7 @@ export async function POST(req) {
         status: "collected",
         collectedAt: new Date(),
         currentLocation,
+        expiryDate: expiryDate ? new Date(expiryDate) : null,
       },
     });
 

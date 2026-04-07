@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Toast, useToast } from "@/components/Toast";
+import useAuth from "@/hooks/useAuth";
 
 const severityColors: Record<string, string> = {
   Mild:     "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300",
@@ -24,24 +25,30 @@ function SkeletonRow() {
 }
 
 export default function RecordsPage() {
-  const [patientId, setPatientId]   = useState("");
-  const [patients, setPatients]     = useState<any[]>([]);
-  const [records, setRecords]       = useState<any[]>([]);
-  const [loading, setLoading]       = useState(false);
-  const [fetched, setFetched]       = useState(false);
-  const [search, setSearch]         = useState("");
+  const { user }                            = useAuth();
+  const isPatient                           = user?.role === "PATIENT";
+  const [patientId, setPatientId]           = useState("");
+  const [patients, setPatients]             = useState<any[]>([]);
+  const [records, setRecords]               = useState<any[]>([]);
+  const [loading, setLoading]               = useState(false);
+  const [fetched, setFetched]               = useState(false);
+  const [search, setSearch]                 = useState("");
   const [filterSeverity, setFilterSeverity] = useState("");
-  const [filterDept, setFilterDept] = useState("");
-  const { toast, show, hide }       = useToast();
-  const router = useRouter();
+  const [filterDept, setFilterDept]         = useState("");
+  const { toast, show, hide }               = useToast();
+  const router                              = useRouter();
 
   useEffect(() => {
-    fetch("/api/users/patients")
-      .then((r) => r.json())
-      .then((d) => setPatients(d.patients || []));
-  }, []);
+    if (!user) return;
+    if (isPatient) {
+      setPatientId(String(user.id));
+    } else {
+      fetch("/api/users/patients")
+        .then((r) => r.json())
+        .then((d) => setPatients(d.patients || []));
+    }
+  }, [user]);
 
-  // Auto-fetch when patient changes
   useEffect(() => {
     if (!patientId) { setRecords([]); setFetched(false); return; }
     fetchRecords();
@@ -50,12 +57,13 @@ export default function RecordsPage() {
   const fetchRecords = async () => {
     setLoading(true);
     try {
-      const res  = await fetch(`/api/records/get?patientId=${patientId}`);
+      const url  = isPatient ? "/api/records/get" : `/api/records/get?patientId=${patientId}`;
+      const res  = await fetch(url);
       const data = await res.json();
       const list = data.records || data || [];
       setRecords(list);
       setFetched(true);
-      if (list.length === 0) show("No records found for this patient.", "error");
+      if (list.length === 0) show("No records found.", "error");
     } catch {
       show("Failed to fetch records.", "error");
     } finally {
@@ -64,11 +72,11 @@ export default function RecordsPage() {
   };
 
   const filtered = records.filter((r) => {
-    const q = search.toLowerCase();
+    const q           = search.toLowerCase();
     const matchSearch = !q || r.diagnosis?.toLowerCase().includes(q) || r.department?.toLowerCase().includes(q) || r.prescription?.toLowerCase().includes(q);
-    const matchSeverity = !filterSeverity || r.severity === filterSeverity;
-    const matchDept = !filterDept || r.department === filterDept;
-    return matchSearch && matchSeverity && matchDept;
+    const matchSev    = !filterSeverity || r.severity === filterSeverity;
+    const matchDept   = !filterDept || r.department === filterDept;
+    return matchSearch && matchSev && matchDept;
   });
 
   const departments = [...new Set(records.map((r) => r.department).filter(Boolean))];
@@ -82,22 +90,31 @@ export default function RecordsPage() {
           Medical Records
         </h1>
 
-        {/* Patient selector */}
-        <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow mb-6 fade-in fade-in-2">
-          <label className="form-label">Select Patient</label>
-          <select
-            value={patientId}
-            onChange={(e) => setPatientId(e.target.value)}
-            className="w-full border dark:border-slate-600 p-2.5 rounded-lg bg-white dark:bg-slate-700 dark:text-slate-100"
-          >
-            <option value="">-- Select Patient --</option>
-            {patients.map((p) => (
-              <option key={p.id} value={String(p.id)}>
-                {p.name || p.email} (ID: {p.id})
-              </option>
-            ))}
-          </select>
-        </div>
+        {/* Patient selector — admins only */}
+        {!isPatient && (
+          <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow mb-6 fade-in fade-in-2">
+            <div className="flex items-center justify-between mb-2">
+              <label className="form-label">Select Patient</label>
+              {patientId && (
+                <button onClick={() => router.push(`/patients/${patientId}`)} className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+                  View Profile →
+                </button>
+              )}
+            </div>
+            <select
+              value={patientId}
+              onChange={(e) => setPatientId(e.target.value)}
+              className="w-full border dark:border-slate-600 p-2.5 rounded-lg bg-white dark:bg-slate-700 dark:text-slate-100"
+            >
+              <option value="">-- Select Patient --</option>
+              {patients.map((p) => (
+                <option key={p.id} value={String(p.id)}>
+                  {p.name || p.email} (ID: {p.id})
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {/* Filters */}
         {fetched && records.length > 0 && (
@@ -115,9 +132,7 @@ export default function RecordsPage() {
               className="border border-slate-200 dark:border-slate-600 px-3 py-2 rounded-lg bg-white dark:bg-slate-700 dark:text-slate-100 text-sm"
             >
               <option value="">All Severities</option>
-              {["Mild","Moderate","Severe","Critical"].map((s) => (
-                <option key={s}>{s}</option>
-              ))}
+              {["Mild","Moderate","Severe","Critical"].map((s) => <option key={s}>{s}</option>)}
             </select>
             <select
               value={filterDept}
@@ -148,14 +163,14 @@ export default function RecordsPage() {
               <line x1="9" y1="13" x2="15" y2="13"/>
             </svg>
             <p className="text-slate-500 dark:text-slate-400 font-medium">No records found</p>
-            <p className="text-slate-400 dark:text-slate-500 text-sm mt-1">Try adjusting your filters or select a different patient.</p>
+            <p className="text-slate-400 dark:text-slate-500 text-sm mt-1">Try adjusting your filters.</p>
           </div>
         )}
 
         {/* Table */}
         {!loading && filtered.length > 0 && (
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow overflow-hidden fade-in fade-in-3">
-            <div className="px-6 py-4 border-b dark:border-slate-700 flex items-center justify-between">
+            <div className="px-6 py-4 border-b dark:border-slate-700">
               <span className="text-sm text-slate-500 dark:text-slate-400">{filtered.length} record{filtered.length !== 1 ? "s" : ""}</span>
             </div>
             <div className="overflow-x-auto">

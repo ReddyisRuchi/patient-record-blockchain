@@ -5,6 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import api from "@/lib/api";
 import useAuth from "@/hooks/useAuth";
 import { useTheme } from "@/components/ThemeProvider";
+import CommandPalette from "@/components/CommandPalette";
 
 export default function Navbar() {
   const router   = useRouter();
@@ -57,12 +58,14 @@ export default function Navbar() {
               {navLink("/dashboard", "Dashboard")}
               {navLink("/records", "Records")}
               {user?.role === "HEALTHCARE_ADMIN" && navLink("/doctor_submit", "Create Record")}
+              {user?.role === "HEALTHCARE_ADMIN" && navLink("/audit", "Audit")}
             </>
           )}
         </div>
       </div>
 
       <div className="flex items-center gap-4">
+        <CommandPalette />
         <button
           onClick={toggle}
           aria-label="Toggle dark mode"
@@ -99,9 +102,12 @@ export default function Navbar() {
           </>
         ) : (
           <>
-            <span className="text-sm text-slate-600 dark:text-slate-300 font-bold hidden md:block tracking-widest uppercase">
+            <button
+              onClick={() => router.push(user?.role === "HEALTHCARE_ADMIN" ? "/admin/profile" : `/patients/${user?.id}`)}
+              className="text-sm text-slate-600 dark:text-slate-300 font-bold hidden md:block tracking-widest uppercase hover:text-slate-900 dark:hover:text-white transition-colors"
+            >
               {user?.name}
-            </span>
+            </button>
             <button onClick={handleLogout} className="btn-secondary">
               Logout
             </button>
