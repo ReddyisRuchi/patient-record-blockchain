@@ -7,9 +7,8 @@ export async function GET(req) {
     const id = searchParams.get("id");
 
     const record = await prisma.patientRecord.findUnique({
-      where: {
-        id: Number(id),
-      },
+      where: { id: Number(id) },
+      include: { createdBy: { select: { name: true, email: true } } },
     });
 
     return NextResponse.json({ record });

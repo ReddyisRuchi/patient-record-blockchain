@@ -8,6 +8,7 @@ type RecordType = {
   id: number; diagnosis: string; symptoms: string; prescription: string;
   department: string; visitType: string; severity: string; followUp: string;
   createdAt: string; blockchainHash?: string;
+  createdBy?: { name: string; email: string } | null;
 };
 type EventType = { location: string; action: string; timestamp: number | string; };
 
@@ -170,6 +171,12 @@ export default function RecordDetailsPage() {
                 <span className="text-sm text-slate-900 dark:text-white font-medium">{value}</span>
               </div>
             ))}
+            {record.createdBy && (
+              <div className="flex gap-4 py-2.5">
+                <span className="text-sm text-slate-500 dark:text-neutral-400 w-32 shrink-0">Created By</span>
+                <span className="text-sm text-slate-900 dark:text-white font-medium">{record.createdBy.name}</span>
+              </div>
+            )}
           </div>
         </div>
 

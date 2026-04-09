@@ -79,7 +79,12 @@ export default function RecordsPage() {
     return matchSearch && matchSev && matchDept;
   });
 
-  const departments = [...new Set(records.map((r) => r.department).filter(Boolean))];
+  const [patientSearch, setPatientSearch] = useState("");
+
+  const filteredPatients = patients.filter((p) =>
+    p.name?.toLowerCase().includes(patientSearch.toLowerCase()) ||
+    p.email?.toLowerCase().includes(patientSearch.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-black py-16 px-4">
@@ -93,26 +98,49 @@ export default function RecordsPage() {
         {/* Patient selector — admins only */}
         {!isPatient && (
           <div className="bg-white dark:bg-neutral-900 p-6 rounded-xl shadow mb-6 fade-in fade-in-2">
-            <div className="flex items-center justify-between mb-2">
-              <label className="form-label">Select Patient</label>
+            <label className="form-label mb-2 block">Search Patient</label>
+            <div className="flex gap-3">
+              <div className="relative flex-1">
+                <svg className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-neutral-500" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Search by name or email..."
+                  value={patientSearch}
+                  onChange={(e) => { setPatientSearch(e.target.value); setPatientId(""); }}
+                  className="w-full pl-9 pr-4 py-2.5 border dark:border-neutral-800 rounded-lg bg-white dark:bg-neutral-900 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-slate-300"
+                />
+              </div>
               {patientId && (
-                <button onClick={() => router.push(`/patients/${patientId}`)} className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
-                  View Profile →
+                <button
+                  onClick={() => router.push(`/patients/${patientId}`)}
+                  className="btn-outline text-sm px-4 whitespace-nowrap"
+                >
+                  View Profile
                 </button>
               )}
             </div>
-            <select
-              value={patientId}
-              onChange={(e) => setPatientId(e.target.value)}
-              className="w-full border dark:border-neutral-800 p-2.5 rounded-lg bg-white dark:bg-neutral-900 dark:text-slate-100"
-            >
-              <option value="">-- Select Patient --</option>
-              {patients.map((p) => (
-                <option key={p.id} value={String(p.id)}>
-                  {p.name || p.email} (ID: {p.id})
-                </option>
-              ))}
-            </select>
+
+            {/* Dropdown results */}
+            {patientSearch && filteredPatients.length > 0 && !patientId && (
+              <div className="mt-2 border dark:border-neutral-800 rounded-lg overflow-hidden shadow-sm">
+                {filteredPatients.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => { setPatientId(String(p.id)); setPatientSearch(p.name || p.email); }}
+                    className="w-full text-left px-4 py-2.5 text-sm hover:bg-slate-50 dark:hover:bg-neutral-800 transition-colors border-b dark:border-neutral-800 last:border-0 text-slate-900 dark:text-slate-100"
+                  >
+                    <span className="font-medium">{p.name}</span>
+                    <span className="text-slate-400 dark:text-neutral-500 ml-2 text-xs">{p.email}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {patientSearch && filteredPatients.length === 0 && (
+              <p className="mt-2 text-sm text-slate-400 dark:text-neutral-500">No patients found.</p>
+            )}
           </div>
         )}
 

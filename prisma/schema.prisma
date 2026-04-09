@@ -8,19 +8,34 @@ datasource db {
 }
 
 model User {
-  id        Int             @id @default(autoincrement())
-  name      String
-  email     String          @unique
-  password  String
-  role      String          @default("PATIENT")
-  createdAt DateTime        @default(now())
-  donations Donation[]
-  records   PatientRecord[]
+  id              Int             @id @default(autoincrement())
+  name            String
+  email           String          @unique
+  password        String
+  role            String          @default("PATIENT")
+  allergies       String?
+  phone           String?
+  dob             DateTime?
+  gender          String?
+  bloodGroup      String?
+  address         String?
+  city            String?
+  state           String?
+  emergencyName   String?
+  emergencyPhone  String?
+  photoUrl        String?
+  walletAddress   String?         @unique
+  walletNonce     String?
+  createdAt       DateTime        @default(now())
+  donations       Donation[]
+  records         PatientRecord[] @relation("PatientRecords")
+  createdRecords  PatientRecord[] @relation("CreatedRecords")
 }
 
 model PatientRecord {
   id             Int      @id @default(autoincrement())
   patientId      Int
+  createdById    Int?
   department     String
   visitType      String
   symptoms       String
@@ -31,7 +46,8 @@ model PatientRecord {
   notes          String?
   blockchainHash String?
   createdAt      DateTime @default(now())
-  patient        User     @relation(fields: [patientId], references: [id])
+  patient        User     @relation("PatientRecords", fields: [patientId], references: [id])
+  createdBy      User?    @relation("CreatedRecords", fields: [createdById], references: [id])
 }
 
 model Donation {

@@ -2,9 +2,20 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import crypto from "crypto";
 import { getContract } from "@/lib/blockchain";
+import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
+
+const JWT_SECRET = process.env.JWT_SECRET || "dev-secret";
 
 export async function POST(req) {
   try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
+    let createdById = null;
+    if (token) {
+      try { createdById = jwt.verify(token, JWT_SECRET).id; } catch {}
+    }
+
     const body = await req.json();
 
     const {
@@ -36,7 +47,8 @@ export async function POST(req) {
         severity,
         followUp,
         department,
-        visitType
+        visitType,
+        ...(createdById && { createdById }),
       }
     });
 

@@ -40,9 +40,6 @@ export async function GET(req) {
     // (saved immediately after on-chain store, so it's the ground truth)
     const storedHash = record.blockchainHash;
 
-    console.log("serialized:", serialized);
-    console.log("currentHash:", currentHash);
-    console.log("storedHash:", storedHash);
 
     // Secondary: also try fetching from chain if available
     let onChainHash = storedHash;

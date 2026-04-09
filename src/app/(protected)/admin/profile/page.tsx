@@ -57,17 +57,61 @@ function ChangePasswordSection() {
   );
 }
 
+function DangerZone({ router }: { router: any }) {
+  const [confirm, setConfirm] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { refreshAuth } = useAuth();
+
+  const handleDelete = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/auth/delete-account", { method: "DELETE" });
+      if (res.ok) {
+        await refreshAuth();
+        router.push("/");
+      }
+    } catch {}
+    finally { setLoading(false); }
+  };
+
+  return (
+    <div className="bg-white dark:bg-neutral-900 rounded-xl shadow p-6 border border-red-200 dark:border-red-900 fade-in fade-in-5">
+      <h2 className="text-lg font-semibold text-red-600 mb-2">Danger Zone</h2>
+      <p className="text-sm text-slate-500 dark:text-neutral-400 mb-4">
+        Permanently delete your account. This cannot be undone.
+      </p>
+      {!confirm ? (
+        <button onClick={() => setConfirm(true)} className="px-4 py-2 rounded-lg border border-red-500 text-red-500 text-sm font-medium hover:bg-red-50 dark:hover:bg-red-950 transition-colors">
+          Delete Account
+        </button>
+      ) : (
+        <div className="space-y-3">
+          <p className="text-sm font-medium text-red-600">Are you absolutely sure?</p>
+          <div className="flex gap-3">
+            <button onClick={handleDelete} disabled={loading} className="px-4 py-2 rounded-lg bg-red-600 text-white text-sm font-medium hover:bg-red-700 transition-colors disabled:opacity-50">
+              {loading ? "Deleting..." : "Yes, delete my account"}
+            </button>
+            <button onClick={() => setConfirm(false)} className="btn-outline text-sm">Cancel</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function AdminProfilePage() {
   const { user }  = useAuth();
   const router    = useRouter();
   const [stats, setStats]       = useState<any>(null);
   const [activity, setActivity] = useState<any[]>([]);
+  const [deptData, setDeptData] = useState<any[]>([]);
 
   useEffect(() => {
     if (!user) return;
     if (user.role !== "HEALTHCARE_ADMIN") { router.replace("/dashboard"); return; }
     fetch("/api/stats").then((r) => r.json()).then(setStats).catch(() => {});
     fetch("/api/activity").then((r) => r.json()).then((d) => setActivity(d.activity || [])).catch(() => {});
+    fetch("/api/analytics/departments").then((r) => r.json()).then((d) => setDeptData(d.data || [])).catch(() => {});
   }, [user]);
 
   if (!user) return null;
@@ -97,7 +141,6 @@ export default function AdminProfilePage() {
             </div>
             <div>
               <h2 className="text-xl font-semibold text-slate-900 dark:text-white">{user.name}</h2>
-              <p className="text-sm text-slate-500 dark:text-slate-400">{user.email}</p>
               <span className="inline-block mt-1 text-xs font-medium px-2 py-0.5 rounded bg-slate-100 dark:bg-neutral-900 text-slate-600 dark:text-slate-300">
                 Healthcare Admin
               </span>
@@ -144,8 +187,35 @@ export default function AdminProfilePage() {
           </div>
         )}
 
+        {/* Department Analytics */}
+        {deptData.length > 0 && (
+          <div className="bg-white dark:bg-neutral-900 rounded-xl shadow p-6 fade-in fade-in-4">
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-6">Department Visit Frequency</h2>
+            <div className="space-y-3">
+              {(() => {
+                const max = Math.max(...deptData.map((d) => d.count));
+                return deptData.map((d) => (
+                  <div key={d.department} className="flex items-center gap-3">
+                    <span className="text-xs text-slate-500 dark:text-neutral-400 w-36 shrink-0 truncate">{d.department}</span>
+                    <div className="flex-1 bg-slate-100 dark:bg-neutral-800 rounded-full h-2 overflow-hidden">
+                      <div
+                        className="h-2 bg-slate-900 dark:bg-white rounded-full transition-all duration-500"
+                        style={{ width: `${(d.count / max) * 100}%` }}
+                      />
+                    </div>
+                    <span className="text-xs font-medium text-slate-700 dark:text-slate-300 w-6 text-right">{d.count}</span>
+                  </div>
+                ));
+              })()}
+            </div>
+          </div>
+        )}
+
         {/* Change password */}
         <ChangePasswordSection />
+
+        {/* Danger zone */}
+        <DangerZone router={router} />
 
       </div>
     </div>

@@ -57,7 +57,7 @@ export default function DashboardPage() {
             </div>
           ) : stats && (
             stats.role === "PATIENT" ? (
-              <div className="flex gap-4">
+              <div className="flex justify-center gap-4">
                 <div className="w-full max-w-xs"><StatCard label="Your Records" value={stats.totalRecords} /></div>
                 <div className="w-full max-w-xs"><StatCard label="Last Visit" value={stats.lastVisit ? new Date(stats.lastVisit).toLocaleDateString() : "—"} /></div>
               </div>
@@ -76,7 +76,7 @@ export default function DashboardPage() {
         <div className={`gap-6 fade-in fade-in-3 ${
           user?.role === "HEALTHCARE_ADMIN" ? "grid grid-cols-3" : "flex justify-center"
         }`}>
-          <div className="card flex flex-col text-center">
+          <div className={`card flex flex-col text-center ${user?.role === "PATIENT" ? "w-full max-w-xs" : ""}`}>
             <h3 className="text-xl font-semibold mb-3 text-slate-900 dark:text-white">View Records</h3>
             <p className="text-slate-500 dark:text-slate-300 mb-6 text-sm flex-1">
               Access and review previously submitted patient records.
