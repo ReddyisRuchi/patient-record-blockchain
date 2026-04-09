@@ -11,7 +11,6 @@ const allCommands = [
   { label: "Create Record",  href: "/doctor_submit",   roles: ["HEALTHCARE_ADMIN"] },
   { label: "Audit Log",      href: "/audit",           roles: ["HEALTHCARE_ADMIN","ADMIN"] },
   { label: "My Profile",     href: "/admin/profile",   roles: ["HEALTHCARE_ADMIN"] },
-  { label: "Settings",       href: "/settings",        roles: ["PATIENT","HEALTHCARE_ADMIN","ADMIN"] },
   { label: "About",          href: "/about",           roles: ["PATIENT","HEALTHCARE_ADMIN","ADMIN"] },
 ];
 

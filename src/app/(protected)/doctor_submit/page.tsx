@@ -30,8 +30,6 @@ export default function SubmitPage() {
 
         const data = await res.json();
 
-        console.log("PATIENTS API RESPONSE:", data); // 🧪 DEBUG
-
         if (data?.patients) {
           setPatients(data.patients);
         } else {

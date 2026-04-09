@@ -27,7 +27,6 @@ export async function GET(request) {
     } else if (decoded.role === "HEALTHCARE_ADMIN") {
       // Healthcare admin must provide patientId
       const paramId = searchParams.get("patientId");
-      console.log("Decoded token:", decoded);
       if (!paramId) {
         return NextResponse.json(
           { error: "patientId is required" },

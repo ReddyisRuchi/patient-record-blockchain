@@ -12,7 +12,6 @@ export default function DonorPage() {
     e.preventDefault();
     if (!isLoggedIn) return;
 
-    console.log("Donor registered:", donationType);
     alert("Donor registration submitted (static demo).");
   }
 

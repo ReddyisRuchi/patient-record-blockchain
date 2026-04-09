@@ -153,8 +153,12 @@ export default function DonationsPage() {
                         <div className="flex items-center gap-2">
                           <button onClick={() => { setSelectedDonation(d); setShowDetails(true); }} className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">Details</button>
                           <span className="text-slate-300 dark:text-slate-600">·</span>
-                          <button onClick={() => { setSelectedDonation(d); setShowAssign(true); }} className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">Assign</button>
-                          <span className="text-slate-300 dark:text-slate-600">·</span>
+                          {d.status !== "assigned" && (
+                            <>
+                              <button onClick={() => { setSelectedDonation(d); setShowAssign(true); }} className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">Assign</button>
+                              <span className="text-slate-300 dark:text-slate-600">·</span>
+                            </>
+                          )}
                           <button onClick={() => router.push(`/donation/${d.id}`)} className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">Track</button>
                         </div>
                       </td>
