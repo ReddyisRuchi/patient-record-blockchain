@@ -408,7 +408,7 @@ PRIVATE_KEY=your_wallet_private_key_without_0x_prefix
 | Name | Role |
 |---|---|
 | P. Phani Prasad | Guide |
-| Anugu Ruchi Reddy | Member |
+| A Ruchi | Member |
 | Aditi Joshi | Member |
 | Kondru Raja Nakshathra | Member |
 
