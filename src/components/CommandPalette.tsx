@@ -9,7 +9,6 @@ const allCommands = [
   { label: "View Records",   href: "/records",         roles: ["PATIENT","HEALTHCARE_ADMIN","ADMIN"] },
   { label: "Verify Record",  href: "/verify",          roles: ["PATIENT","HEALTHCARE_ADMIN","ADMIN"] },
   { label: "Create Record",  href: "/doctor_submit",   roles: ["HEALTHCARE_ADMIN"] },
-  { label: "Audit Log",      href: "/audit",           roles: ["HEALTHCARE_ADMIN","ADMIN"] },
   { label: "My Profile",     href: "/admin/profile",   roles: ["HEALTHCARE_ADMIN"] },
   { label: "About",          href: "/about",           roles: ["PATIENT","HEALTHCARE_ADMIN","ADMIN"] },
 ];

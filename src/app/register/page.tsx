@@ -101,7 +101,7 @@ export default function RegisterPage() {
                 <select name="role" required className={sel}>
                   <option value="PATIENT">Patient</option>
                   <option value="HEALTHCARE_ADMIN">Healthcare Admin</option>
-                  <option value="DONOR">Donor</option>
+                  
                 </select>
               </div>
               {error && <p className="text-sm text-red-500 text-center">{error}</p>}
@@ -185,7 +185,7 @@ export default function RegisterPage() {
                 <select id="wRole" required className={sel}>
                   <option value="PATIENT">Patient</option>
                   <option value="HEALTHCARE_ADMIN">Healthcare Admin</option>
-                  <option value="DONOR">Donor</option>
+                  
                 </select>
               </div>
               <div><label className="form-label">Phone *</label><input id="wPhone" required className={inp} /></div>

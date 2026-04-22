@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Toast, useToast } from "@/components/Toast";
+import useAuth from "@/hooks/useAuth";
 
 type RecordType = {
   id: number; diagnosis: string; symptoms: string; prescription: string;
@@ -32,8 +33,8 @@ export default function RecordDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const { toast, show, hide } = useToast();
-
-  const role = "HEALTHCARE_ADMIN";
+  const { user } = useAuth();
+  const isAdmin = user?.role === "HEALTHCARE_ADMIN";
 
   useEffect(() => {
     if (!id) return;
@@ -246,8 +247,8 @@ export default function RecordDetailsPage() {
           )}
         </div>
 
-        {/* Add Event */}
-        {role === "HEALTHCARE_ADMIN" && (
+        {/* Add Event — admins only */}
+        {isAdmin && (
           <div className="fade-in fade-in-5">
             <button onClick={() => setShowModal(true)} className="btn-primary">
               Add Tracking Event

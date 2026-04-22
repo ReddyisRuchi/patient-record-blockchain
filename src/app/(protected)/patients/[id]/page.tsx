@@ -414,6 +414,49 @@ export default function PatientProfilePage() {
           )}
         </div>
 
+        {/* Severity Trend */}
+        {records.length > 1 && (
+          <div className="bg-white dark:bg-neutral-900 rounded-xl shadow p-6 fade-in fade-in-4">
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-6">Severity Trend</h2>
+            <div className="flex items-end gap-2 h-24">
+              {[...records].reverse().map((r, i) => {
+                const heights: Record<string, number> = { Mild: 25, Moderate: 50, Severe: 75, Critical: 100 };
+                const colors: Record<string, string>  = {
+                  Mild:     "bg-green-400 dark:bg-green-500",
+                  Moderate: "bg-yellow-400 dark:bg-yellow-500",
+                  Severe:   "bg-orange-400 dark:bg-orange-500",
+                  Critical: "bg-red-500",
+                };
+                const h = heights[r.severity] || 25;
+                return (
+                  <div key={r.id} className="flex flex-col items-center gap-1 flex-1 group relative">
+                    <div
+                      className={`w-full rounded-t-sm ${colors[r.severity] || "bg-slate-300"} transition-all duration-300`}
+                      style={{ height: `${h}%` }}
+                    />
+                    {/* Tooltip */}
+                    <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-slate-900 dark:bg-white text-white dark:text-black text-xs rounded px-2 py-1 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10">
+                      {r.severity} · {new Date(r.createdAt).toLocaleDateString()}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="flex justify-between mt-2 text-xs text-slate-400 dark:text-neutral-500">
+              <span>Oldest</span>
+              <span>Latest</span>
+            </div>
+            <div className="flex gap-4 mt-3 flex-wrap">
+              {["Mild","Moderate","Severe","Critical"].map((s) => (
+                <div key={s} className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-neutral-400">
+                  <div className={`w-2.5 h-2.5 rounded-sm ${{ Mild:"bg-green-400", Moderate:"bg-yellow-400", Severe:"bg-orange-400", Critical:"bg-red-500" }[s]}`} />
+                  {s}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Medicine & Symptom History */}
         {records.length > 0 && (
           <div className="bg-white dark:bg-neutral-900 rounded-xl shadow p-6 fade-in fade-in-4">

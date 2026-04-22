@@ -2,6 +2,7 @@ import "./globals.css";
 import AuthProvider from "@/components/AuthProvider";
 import Footer from "@/components/Footer";
 import ThemeProvider from "@/components/ThemeProvider";
+import BackToTop from "@/components/BackToTop";
 
 export default function RootLayout({ children }) {
   return (
@@ -14,6 +15,7 @@ export default function RootLayout({ children }) {
             </AuthProvider>
           </div>
           <Footer />
+          <BackToTop />
         </ThemeProvider>
       </body>
     </html>
