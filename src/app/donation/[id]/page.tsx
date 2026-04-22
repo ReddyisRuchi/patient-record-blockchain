@@ -4,11 +4,14 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 import { Toast, useToast } from "@/components/Toast";
+import useAuth from "@/hooks/useAuth";
 
 export default function DonationPage() {
   const { id }   = useParams();
   const router   = useRouter();
   const { toast, show, hide } = useToast();
+  const { user } = useAuth();
+  const isAdmin  = user?.role === "HEALTHCARE_ADMIN";
 
   const [history, setHistory]   = useState<any[]>([]);
   const [location, setLocation] = useState("");
@@ -66,6 +69,18 @@ export default function DonationPage() {
             <QRCodeCanvas value={`${typeof window !== "undefined" ? window.location.origin : ""}/donation/${id}`} size={180} />
           </div>
           <p className="text-xs text-slate-400 dark:text-slate-500">Scan to view this donation's tracking page</p>
+          <a
+            href={`https://sepolia.etherscan.io/address/${process.env.NEXT_PUBLIC_CONTRACT_ADDRESS}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs text-slate-500 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+              <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+            </svg>
+            View Contract on Etherscan
+          </a>
         </div>
 
         {/* Journey timeline */}
@@ -91,13 +106,15 @@ export default function DonationPage() {
           )}
         </div>
 
-        {/* Add event */}
-        <div className="bg-white dark:bg-neutral-900 rounded-xl shadow p-6 space-y-4 fade-in fade-in-4">
-          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Add Event</h2>
-          <div><label className="form-label">Location</label><input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. City Hospital, Lab B" className={inputCls} /></div>
-          <div><label className="form-label">Action</label><input value={action} onChange={(e) => setAction(e.target.value)} placeholder="e.g. Collected, Transported, Received" className={inputCls} /></div>
-          <button onClick={addEvent} className="btn-primary">Add Event</button>
-        </div>
+        {/* Add event — admins only */}
+        {isAdmin && (
+          <div className="bg-white dark:bg-neutral-900 rounded-xl shadow p-6 space-y-4 fade-in fade-in-4">
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Add Event</h2>
+            <div><label className="form-label">Location</label><input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. City Hospital, Lab B" className={inputCls} /></div>
+            <div><label className="form-label">Action</label><input value={action} onChange={(e) => setAction(e.target.value)} placeholder="e.g. Collected, Transported, Received" className={inputCls} /></div>
+            <button onClick={addEvent} className="btn-primary">Add Event</button>
+          </div>
+        )}
 
       </div>
     </div>

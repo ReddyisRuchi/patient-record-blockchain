@@ -58,7 +58,7 @@ export default function DashboardPage() {
           ) : stats && (
             stats.role === "PATIENT" ? (
               <div className="flex justify-center gap-4">
-                <div className="w-full max-w-xs"><StatCard label="Your Records" value={stats.totalRecords} /></div>
+                <div className="w-full max-w-xs"><StatCard label="Your Records" value={stats.totalRecords} sub={stats.severityBreakdown || undefined} /></div>
                 <div className="w-full max-w-xs"><StatCard label="Last Visit" value={stats.lastVisit ? new Date(stats.lastVisit).toLocaleDateString() : "—"} /></div>
               </div>
             ) : (

@@ -19,7 +19,12 @@ export async function GET() {
         orderBy: { createdAt: "desc" },
       });
       const lastVisit = records[0]?.createdAt ?? null;
-      return NextResponse.json({ role: "PATIENT", totalRecords: records.length, lastVisit });
+      const severityBreakdown = ["Mild","Moderate","Severe","Critical"].reduce((acc, s) => {
+        const count = records.filter(r => r.severity === s).length;
+        if (count > 0) acc.push(`${count} ${s}`);
+        return acc;
+      }, [] as string[]);
+      return NextResponse.json({ role: "PATIENT", totalRecords: records.length, lastVisit, severityBreakdown: severityBreakdown.join(", ") || null });
     }
 
     if (decoded.role === "HEALTHCARE_ADMIN") {
