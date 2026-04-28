@@ -68,6 +68,7 @@ export default function RecordDetailsPage() {
 
   const handleAddEvent = async () => {
     if (!location || !action) { show("Please fill all fields.", "error"); return; }
+    setShowModal(false); // close immediately
     try {
       const res = await fetch("/api/track/add", {
         method: "POST",
@@ -78,7 +79,6 @@ export default function RecordDetailsPage() {
         setLocation(""); setAction("");
         fetchHistory();
         show("Tracking event added.");
-        setShowModal(false);
       } else {
         show("Failed to add event.", "error");
       }

@@ -11,7 +11,7 @@ export async function GET() {
     const token = cookieStore.get("token")?.value;
     if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET) as any;
 
     if (decoded.role === "PATIENT") {
       const records = await prisma.patientRecord.findMany({

@@ -17,6 +17,7 @@ export default function SubmitPage() {
 
   const isLoggedIn = Boolean(user);
   const isDoctor   = user?.role === "HEALTHCARE_ADMIN";
+  const [formKey, setFormKey] = useState(0);
 
   // 🔁 Fetch patients
   useEffect(() => {
@@ -78,6 +79,7 @@ export default function SubmitPage() {
       if (res.ok) {
         setCreatedRecord(data.record);
         setPatientId("");
+        setFormKey(k => k + 1); // reset form fields
         show("Record created successfully.");
       } else {
         show(data.error || "Failed to create record.", "error");
@@ -116,7 +118,7 @@ export default function SubmitPage() {
 
           {/* FORM */}
           {isDoctor && (
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6" key={formKey}>
 
               {/* 👤 Patient Dropdown */}
               <div>
