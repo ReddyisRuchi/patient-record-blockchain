@@ -5,39 +5,53 @@ import { getContract } from "@/lib/blockchain";
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { donationId, patientId } = body;
+    const { donationId, patientId, recordId } = body;
 
     if (!donationId || !patientId) {
-      return NextResponse.json({ error: "Missing donationId or patientId" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing donationId or patientId" },
+        { status: 400 }
+      );
     }
 
-    // Get patient name for the event log
+    // 🔍 Get patient name (for better event message)
     const patient = await prisma.user.findUnique({
       where: { id: Number(patientId) },
       select: { name: true },
     });
 
+    // 🔄 Update donation in DB
     const donation = await prisma.donation.update({
       where: { id: Number(donationId) },
-      data: { patientId: Number(patientId), status: "assigned" },
+      data: {
+        patientId: Number(patientId),
+        status: "assigned",
+        recordId: Number(recordId),
+      },
     });
 
-    // Log assignment as a blockchain tracking event
+    // ⛓️ Add blockchain event (IMPORTANT: +1000 offset)
     try {
       const contract = await getContract();
+
       const tx = await contract.addEvent(
-        Number(donationId),
+        Number(donationId) + 1000,
         donation.currentLocation || "Hospital",
-        `Assigned to patient: ${patient?.name || "Unknown"}`
+        `Assigned to ${patient?.name || "Unknown"}`
       );
+
       await tx.wait();
     } catch (blockchainErr) {
-      // Don't fail the whole request if blockchain is unavailable
+      // Do not fail API if blockchain fails
       console.error("Blockchain event failed:", blockchainErr);
     }
 
     return NextResponse.json({ donation });
   } catch (err) {
-    return NextResponse.json({ error: "Failed to assign donation" }, { status: 500 });
+    console.error(err);
+    return NextResponse.json(
+      { error: "Failed to assign donation" },
+      { status: 500 }
+    );
   }
 }

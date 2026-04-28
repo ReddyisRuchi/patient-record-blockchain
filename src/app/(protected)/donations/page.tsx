@@ -72,7 +72,7 @@ export default function DonationsPage() {
     await fetch("/api/donations/assign", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ donationId: selectedDonation.id, patientId: selectedPatient }),
+      body: JSON.stringify({ donationId: selectedDonation.id, patientId: selectedPatient, recordId: selectedDonation.id, }),
     });
     setShowAssign(false);
     show("Donation assigned.");

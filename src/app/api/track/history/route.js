@@ -15,7 +15,7 @@ export async function GET(req) {
 
     const contract = await getContract();
 
-    const events = await contract.getHistory(Number(donationId)); 
+    const events = await contract.getHistory(Number(donationId)+1000); 
 
     // ✅ SAFE parsing (works for all ethers versions)
     const formatted = events.map((event) => {

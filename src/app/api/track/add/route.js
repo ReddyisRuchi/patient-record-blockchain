@@ -13,7 +13,7 @@ export async function POST(req) {
     }
 
     const contract = await getContract();
-    const tx = await contract.addEvent(Number(id), location, action);
+    const tx = await contract.addEvent(Number(id)+1000, location, action);
     await tx.wait();
 
     return NextResponse.json({ success: true });

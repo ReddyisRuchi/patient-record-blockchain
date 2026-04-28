@@ -218,7 +218,44 @@ export default function RecordDetailsPage() {
             </div>
           )}
         </div>
+<div className="mb-4">
+  <button
+  onClick={async () => {
+    try {
+      // Step 1: get the record (to get patientId)
+      const res1 = await fetch(`/api/records/getById?id=${record.id}`);
+      const recordData = await res1.json();
 
+      const patientId = recordData.record?.patientId;
+
+      if (!patientId) {
+        alert("No patient linked to this record");
+        return;
+      }
+
+      // Step 2: find donation assigned to this patient
+      const res2 = await fetch(`/api/donations/get`);
+      const donationData = await res2.json();
+
+      const donation = donationData.donations?.find(
+        (d) => d.patientId === patientId
+      );
+
+      if (donation) {
+        router.push(`/donation/${donation.id}`);
+      } else {
+        alert("No donation assigned to this patient");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error fetching donation");
+    }
+  }}
+  className="btn-outline"
+>
+  View Donation Blockchain Journey
+</button>
+</div>
         {/* Tracking History */}
         <div className="bg-white dark:bg-neutral-900 p-6 rounded-xl shadow fade-in fade-in-4">
           <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-6">Tracking History</h2>
